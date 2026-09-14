@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اطلاعات پرداخت</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#000;
+    color:#fff;
+    font-family:Vazirmatn,Tahoma,sans-serif;
+}
+
+.container{
+    width:min(1050px,94%);
+    margin:auto;
+    padding:28px 0 60px;
+}
+
+.header,
+.amount-box,
+.crypto-card{
+    background:#080808;
+    border:1px solid #252525;
+}
+
+.header{
+    border-radius:25px;
+    text-align:center;
+    padding:28px 20px;
+    margin-bottom:20px;
+}
+
+.header h1{
+    font-size:26px;
+    font-weight:800;
+}
+
+.header p{
+    color:#777;
+    font-size:12px;
+    margin-top:7px;
+}
+
+.amount-box{
+    border-radius:23px;
+    text-align:center;
+    padding:25px 18px;
+    margin-bottom:28px;
+}
+
+.amount-title{
+    color:#777;
+    font-size:12px;
+}
+
+.amount{
+    font-size:30px;
+    font-weight:800;
+    margin-top:5px;
+}
+
+.amount-text{
+    color:#aaa;
+    font-size:14px;
+    margin-top:6px;
+}
+
+.pay-text{
+    display:inline-block;
+    background:#111;
+    border:1px solid #252525;
+    border-radius:12px;
+    color:#ccc;
+    padding:10px 15px;
+    margin-top:15px;
+    font-size:12px;
+}
+
+.selected-methods{
+    margin-top:15px;
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:7px;
+}
+
+.method{
+    background:#151515;
+    border:1px solid #292929;
+    color:#bbb;
+    padding:6px 10px;
+    border-radius:9px;
+    font-size:10px;
+}
+
+/* SECTION */
+
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:28px 0 15px;
+}
+
+.section-title span{
+    width:4px;
+    height:23px;
+    border-radius:10px;
+    background:#fff;
+}
+
+.section-title h2{
+    font-size:17px;
+}
+
+/* BANK CARDS */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.bank-card{
+    min-height:280px;
+    border-radius:25px;
+    padding:23px;
+    position:relative;
+    overflow:hidden;
+    border:1px solid #292929;
+    box-shadow:0 18px 45px rgba(0,0,0,.5);
+}
+
+.bank-card:after{
+    content:"";
+    position:absolute;
+    width:300px;
+    height:300px;
+    border:1px solid rgba(255,255,255,.035);
+    border-radius:50%;
+    left:-145px;
+    bottom:-190px;
+}
+
+.parsian{background:linear-gradient(145deg,#191919,#050505)}
+.sepah{background:linear-gradient(145deg,#151515,#030303)}
+.eghtesad{background:linear-gradient(145deg,#1b1b1b,#050505)}
+.saman{background:linear-gradient(145deg,#171717,#030303)}
+.melli{background:linear-gradient(145deg,#1b1b1b,#050505)}
+.keshavarzi{background:linear-gradient(145deg,#151515,#030303)}
+
+.card-top{
+    display:flex;
+    align-items:center;
+    position:relative;
+    z-index:2;
+}
+
+.bank-info{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.bank-logo{
+    width:53px;
+    height:53px;
+    background:#fff;
+    padding:7px;
+    border-radius:14px;
+    object-fit:contain;
+}
+
+.bank-name{
+    font-size:16px;
+    font-weight:800;
+}
+
+.owner-label{
+    color:#777;
+    font-size:10px;
+    margin-top:19px;
+    position:relative;
+    z-index:2;
+}
+
+.owner-name{
+    font-size:15px;
+    font-weight:700;
+    margin-top:3px;
+    position:relative;
+    z-index:2;
+}
+
+.card-number-box{
+    position:relative;
+    z-index:2;
+    margin:19px 0 15px;
+}
+
+.label{
+    color:#777;
+    font-size:10px;
+    margin-bottom:5px;
+}
+
+.card-number-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.card-number{
+    direction:ltr;
+    font-size:19px;
+    letter-spacing:1.5px;
+    font-weight:700;
+    flex:1;
+    white-space:nowrap;
+}
+
+.copy-card{
+    background:#fff;
+    color:#000;
+    border:0;
+    border-radius:8px;
+    padding:7px 10px;
+    font-family:inherit;
+    font-size:10px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.value{
+    direction:ltr;
+    text-align:right;
+    font-family:monospace;
+    font-size:11px;
+    color:#ddd;
+    word-break:break-all;
+    line-height:1.7;
+}
+
+.copy-sheba{
+    margin-top:7px;
+    background:#101010;
+    border:1px solid #303030;
+    color:#ddd;
+    border-radius:8px;
+    padding:6px 11px;
+    font-family:inherit;
+    font-size:10px;
+    cursor:pointer;
+}
+
+/* CRYPTO */
+
+.crypto-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:17px;
+}
+
+.crypto-card{
+    border-radius:21px;
+    padding:21px;
+}
+
+.crypto-top{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:15px;
+}
+
+.crypto-icon{
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    background:#111;
+    border:1px solid #292929;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:800;
+}
+
+.crypto-name{
+    font-size:15px;
+    font-weight:800;
+}
+
+.crypto-network{
+    color:#666;
+    font-size:10px;
+    margin-top:3px;
+}
+
+.crypto-address{
+    background:#050505;
+    border:1px solid #1d1d1d;
+    border-radius:11px;
+    padding:11px;
+    direction:ltr;
+    text-align:left;
+    font-family:monospace;
+    font-size:10px;
+    line-height:1.7;
+    word-break:break-all;
+    color:#ddd;
+}
+
+.crypto-copy{
+    width:100%;
+    margin-top:9px;
+    border:0;
+    border-radius:9px;
+    background:#fff;
+    color:#000;
+    padding:9px;
+    font-family:inherit;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.footer{
+    color:#444;
+    text-align:center;
+    font-size:10px;
+    margin-top:35px;
+}
+
+.toast{
+    position:fixed;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#fff;
+    color:#000;
+    padding:10px 18px;
+    border-radius:11px;
+    font-size:12px;
+    font-weight:700;
+    opacity:0;
+    pointer-events:none;
+    transition:.2s;
+}
+
+.toast.show{
+    opacity:1;
+}
+
+@media(max-width:700px){
+    .cards,
+    .crypto-grid{
+        grid-template-columns:1fr;
+    }
+
+    .amount{
+        font-size:26px;
+    }
+
+    .card-number{
+        font-size:16px;
+    }
+}
+
+@media(max-width:430px){
+    .bank-card{
+        padding:19px;
+    }
+
+    .card-number{
+        font-size:14px;
+    }
+
+    .copy-card{
+        padding:6px 8px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>اطلاعات پرداخت</h1>
+        <p>جهت واریز وجه، یکی از روش‌های زیر را انتخاب کنید</p>
+    </div>
+
+    <div class="amount-box">
+
+        <div class="amount-title">
+            مبلغ قابل پرداخت
+        </div>
+
+        <div class="amount" id="amount">
+            ۰ تومان
+        </div>
+
+        <div class="amount-text" id="amountText">
+            مبلغی مشخص نشده است
+        </div>
+
+        <div class="pay-text" id="payText">
+            مبلغ موردنظر را واریز کنید.
+        </div>
+
+        <div class="selected-methods" id="selectedMethods"></div>
+
+    </div>
+
+    <div id="bankSection">
+
+        <div class="section-title">
+            <span></span>
+            <h2>حساب‌های بانکی</h2>
+        </div>
+
+        <div class="cards" id="bankCards"></div>
+
+    </div>
+
+    <div id="cryptoSection">
+
+        <div class="section-title">
+            <span></span>
+            <h2>ارزهای دیجیتال</h2>
+        </div>
+
+        <div class="crypto-grid" id="cryptoCards"></div>
+
+    </div>
+
+    <div class="footer">
+        no15.ir/card
+    </div>
+
+</div>
+
+<div class="toast" id="toast">
+    ✓ با موفقیت کپی شد
+</div>
+
+
+<script>
+
+/* =========================
+   اطلاعات بانک‌ها
+========================= */
+
+const banks = [
+
+{
+    id:1,
+    name:"بانک پارسیان",
+    owner:"رحیم سلطانی",
+    card:"6221061263307110",
+    sheba:"IR140540126230103514846601",
+    logo:"https://ir-banks.github.io/logos/banks/Parsian.svg",
+    className:"parsian"
+},
+
+{
+    id:2,
+    name:"بانک سپه",
+    owner:"رحیم سلطانی",
+    card:"5892101645866555",
+    sheba:"IR240150000003120015310325",
+    logo:"https://ir-banks.github.io/logos/banks/Sepah.svg",
+    className:"sepah"
+},
+
+{
+    id:3,
+    name:"بانک اقتصاد نوین",
+    owner:"رحیم سلطانی",
+    card:"6274121775135478",
+    sheba:"IR470550263144402584498001",
+    logo:"https://ir-banks.github.io/logos/banks/Eghtesad_Novin.svg",
+    className:"eghtesad"
+},
+
+{
+    id:4,
+    name:"بانک سامان",
+    owner:"رحیم سلطانی",
+    card:"6219861467081880",
+    sheba:"IR270560611828007413128001",
+    logo:"https://ir-banks.github.io/logos/banks/Saman.svg",
+    className:"saman"
+},
+
+{
+    id:5,
+    name:"بانک ملی",
+    owner:"راسان سلطانی",
+    card:"6037991719441614",
+    sheba:"IR900170000000367921567005",
+    logo:"https://ir-banks.github.io/logos/banks/Melli.svg",
+    className:"melli"
+},
+
+{
+    id:6,
+    name:"بانک کشاورزی",
+    owner:"راسان سلطانی",
+    card:"6037701214108471",
+    sheba:"IR760160000000001136205735",
+    logo:"https://ir-banks.github.io/logos/banks/Keshavarzi.svg",
+    className:"keshavarzi"
+}
+
+];
+
+
+/* =========================
+   ارزها
+========================= */
+
+const cryptos = [
+
+{
+    id:"ton",
+    name:"Toncoin",
+    network:"شبکه TON",
+    icon:"TON",
+    address:"UQDesR_tBH4S9ZOROCgtm1j-R-vXXuECTz9F0AINWPtO4Ewq"
+},
+
+{
+    id:"bep20",
+    name:"USDT",
+    network:"شبکه BEP20",
+    icon:"₮",
+    address:"0xE6f52D93Af151bb2A9b41064e0B3efd8e4A1Fdf6"
+},
+
+{
+    id:"trc20",
+    name:"USDT",
+    network:"شبکه TRC20",
+    icon:"₮",
+    address:"TVVek8wQNFnQJt8b7vkURYAbjsbVsuEgi1"
+},
+
+{
+    id:"tron",
+    name:"TRON",
+    network:"شبکه TRC20",
+    icon:"TRX",
+    address:"TVVek8wQNFnQJt8b7vkURYAbjsbVsuEgi1"
+}
+
+];
+
+
+/* =========================
+   URL
+========================= */
+
+const params = new URLSearchParams(location.search);
+
+const amount =
+    Number(
+        (params.get("amount") || "0")
+        .replace(/[^\d]/g,"")
+    );
+
+const bankIds =
+    (params.get("banks") || "")
+    .split(",")
+    .map(Number)
+    .filter(Boolean);
+
+const cryptoIds =
+    (params.get("crypto") || "")
+    .split(",")
+    .filter(Boolean);
+
+
+/* =========================
+   عدد فارسی
+========================= */
+
+function faNumber(num){
+    return Number(num).toLocaleString("fa-IR");
+}
+
+
+/* =========================
+   متن مبلغ
+========================= */
+
+function amountText(num){
+
+    if(!num)
+        return "مبلغی مشخص نشده است";
+
+    let n=num;
+    const parts=[];
+
+    const billion=Math.floor(n/1000000000);
+    n%=1000000000;
+
+    const million=Math.floor(n/1000000);
+    n%=1000000;
+
+    const thousand=Math.floor(n/1000);
+    const rest=n%1000;
+
+    if(billion)
+        parts.push(faNumber(billion)+" میلیارد");
+
+    if(million)
+        parts.push(faNumber(million)+" میلیون");
+
+    if(thousand)
+        parts.push(faNumber(thousand)+" هزار");
+
+    if(rest)
+        parts.push(faNumber(rest));
+
+    return parts.join(" و ")+" تومان";
+}
+
+
+/* =========================
+   مبلغ
+========================= */
+
+document.getElementById("amount").textContent =
+    amount
+    ? faNumber(amount)+" تومان"
+    : "۰ تومان";
+
+document.getElementById("amountText").textContent =
+    amountText(amount);
+
+if(amount){
+
+    document.getElementById("payText").textContent =
+        "لطفاً "+amountText(amount)+" را واریز کنید.";
+
+}
+
+
+/* =========================
+   نام روش‌های انتخاب‌شده
+========================= */
+
+const methodBox =
+    document.getElementById("selectedMethods");
+
+const selectedBanks =
+    banks.filter(bank => bankIds.includes(bank.id));
+
+const selectedCryptos =
+    cryptos.filter(crypto => cryptoIds.includes(crypto.id));
+
+
+selectedBanks.forEach(bank=>{
+
+    const el=document.createElement("div");
+
+    el.className="method";
+    el.textContent=bank.name;
+
+    methodBox.appendChild(el);
+
+});
+
+
+selectedCryptos.forEach(crypto=>{
+
+    const el=document.createElement("div");
+
+    el.className="method";
+    el.textContent=crypto.name+" "+crypto.network;
+
+    methodBox.appendChild(el);
+
+});
+
+
+/* =========================
+   بانک‌ها
+========================= */
+
+const bankCards =
+    document.getElementById("bankCards");
+
+selectedBanks.forEach(bank=>{
+
+    bankCards.innerHTML += `
+
+    <div class="bank-card ${bank.className}">
+
+        <div class="card-top">
+
+            <div class="bank-info">
+
+                <img
+                    class="bank-logo"
+                    src="${bank.logo}"
+                    alt="${bank.name}">
+
+                <div class="bank-name">
+                    ${bank.name}
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="owner-label">
+            نام صاحب کارت
+        </div>
+
+        <div class="owner-name">
+            ${bank.owner}
+        </div>
+
+        <div class="card-number-box">
+
+            <div class="label">
+                شماره کارت
+            </div>
+
+            <div class="card-number-row">
+
+                <div class="card-number">
+                    ${bank.card.slice(0,4)}
+                    ${bank.card.slice(4,8)}
+                    ${bank.card.slice(8,12)}
+                    ${bank.card.slice(12,16)}
+                </div>
+
+                <button
+                    class="copy-card"
+                    onclick="copyText('${bank.card}')">
+                    کپی
+                </button>
+
+            </div>
+
+        </div>
+
+        <div>
+
+            <div class="label">
+                شماره شبا
+            </div>
+
+            <div class="value">
+                ${bank.sheba}
+            </div>
+
+            <button
+                class="copy-sheba"
+                onclick="copyText('${bank.sheba}')">
+                کپی شبا
+            </button>
+
+        </div>
+
+    </div>
+
+    `;
+
+});
+
+
+/* اگر بانک انتخاب نشده */
+if(selectedBanks.length===0){
+
+    document.getElementById("bankSection").style.display="none";
+
+}
+
+
+/* =========================
+   ارزها
+========================= */
+
+const cryptoCards =
+    document.getElementById("cryptoCards");
+
+selectedCryptos.forEach(crypto=>{
+
+    cryptoCards.innerHTML += `
+
+    <div class="crypto-card">
+
+        <div class="crypto-top">
+
+            <div class="crypto-icon">
+                ${crypto.icon}
+            </div>
+
+            <div>
+
+                <div class="crypto-name">
+                    ${crypto.name}
+                </div>
+
+                <div class="crypto-network">
+                    ${crypto.network}
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="crypto-address">
+            ${crypto.address}
+        </div>
+
+        <button
+            class="crypto-copy"
+            onclick="copyText('${crypto.address}')">
+            کپی آدرس
+        </button>
+
+    </div>
+
+    `;
+
+});
+
+
+if(selectedCryptos.length===0){
+
+    document.getElementById("cryptoSection").style.display="none";
+
+}
+
+
+/* =========================
+   کپی
+========================= */
+
+function copyText(text){
+
+    if(navigator.clipboard){
+
+        navigator.clipboard.writeText(text);
+
+    }else{
+
+        const textarea=document.createElement("textarea");
+
+        textarea.value=text;
+
+        document.body.appendChild(textarea);
+
+        textarea.select();
+
+        document.execCommand("copy");
+
+        textarea.remove();
+    }
+
+    const toast=document.getElementById("toast");
+
+    toast.classList.add("show");
+
+    setTimeout(()=>{
+        toast.classList.remove("show");
+    },1600);
+}
+
+</script>
+
+</body>
+</html>
