@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>اطلاعات پرداخت</title>
+<title>ارسال رسید تراکنش | اطلاعات پرداخت</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
@@ -14,6 +14,11 @@
     padding:0;
 }
 
+    footer {
+      margin-top: 30px;
+      font-size: 0.8em;
+      opacity: 0.7;
+    }
 body{
     background:#000;
     color:#fff;
@@ -390,6 +395,80 @@ body{
         padding:6px 8px;
     }
 }
+
+/* SOCIAL CONTACTS */
+.social-section{
+    margin-top:32px;
+}
+.social-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+}
+.social-item{
+    --social:#777;
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:16px 18px;
+    border:1px solid color-mix(in srgb,var(--social) 38%,#202020);
+    background:linear-gradient(145deg,color-mix(in srgb,var(--social) 12%,#0b0b0b),#050505);
+    border-radius:18px;
+    color:#fff;
+    text-decoration:none;
+    transition:.2s ease;
+    box-shadow:0 12px 30px rgba(0,0,0,.28);
+}
+.social-item:hover{
+    transform:translateY(-2px);
+    border-color:var(--social);
+    box-shadow:0 16px 34px rgba(0,0,0,.4);
+}
+.social-icon{
+    width:46px;
+    height:46px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 46px;
+    background:var(--social);
+    padding:4px;
+    overflow:hidden;
+    box-shadow:0 7px 18px color-mix(in srgb,var(--social) 28%,transparent);
+}
+.social-icon img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
+    border-radius:10px;
+}
+.social-content{
+    min-width:0;
+}
+.social-name{
+    font-size:14px;
+    font-weight:800;
+}
+.social-link{
+    direction:ltr;
+    text-align:right;
+    color:#888;
+    font-family:monospace;
+    font-size:11px;
+    margin-top:4px;
+    word-break:break-word;
+}
+.telegram{--social:#229ED9}
+.whatsapp{--social:#25D366}
+.rubika{--social:#7B61FF}
+.bale{--social:#20A4F3}
+
+@media(max-width:700px){
+    .social-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 
@@ -398,7 +477,7 @@ body{
 <div class="container">
 
     <div class="header">
-        <h1>اطلاعات پرداخت</h1>
+        <h1>ارسال رسید تراکنش</h1>
         <p>جهت واریز وجه، یکی از روش‌های زیر را انتخاب کنید</p>
     </div>
 
@@ -446,10 +525,59 @@ body{
 
     </div>
 
-    <div class="footer">
-        4ba.ir/no15
+
+    <div class="social-section">
+        <div class="section-title">
+            <span></span>
+            <h2>ارسال رسید تراکنش</h2>
+        </div>
+
+        <div class="social-grid">
+            <a class="social-item telegram" href="https://t.me/rasansol" target="_blank" rel="noopener">
+                <div class="social-icon"><img src="https://pikfree.ir/wp-content/uploads/edd/2021/06/telegram-2-Top.jpg" alt="تلگرام"></div>
+                <div class="social-content">
+                    <div class="social-name">تلگرام</div>
+                    <div class="social-link">t.me/rasansol</div>
+                </div>
+            </a>
+
+            <a class="social-item whatsapp" href="https://wa.me/09004470447" target="_blank" rel="noopener">
+                <div class="social-icon"><img src="https://pikfree.ir/wp-content/uploads/edd/2021/04/whatsapp-social-media-icon-design-logo-Top.jpg" alt="واتساپ"></div>
+                <div class="social-content">
+                    <div class="social-name">واتساپ</div>
+                    <div class="social-link">09004470447</div>
+                </div>
+            </a>
+
+            <a class="social-item rubika" href="https://rubika.ir/Irrasan" target="_blank" rel="noopener">
+                <div class="social-icon"><img src="https://logoyab.com/wp-content/uploads/2025/12/Rubika-App-Logo-1030x1030.png" alt="روبیکا"></div>
+                <div class="social-content">
+                    <div class="social-name">روبیکا</div>
+                    <div class="social-link">@Irrasan</div>
+                </div>
+            </a>
+
+            <a class="social-item bale" href="https://ble.ir/rasansol" target="_blank" rel="noopener">
+                <div class="social-icon"><img src="https://logoyab.com/wp-content/uploads/2024/07/Bale-Logo-1030x1030.png" alt="بله"></div>
+                <div class="social-content">
+                    <div class="social-name">بله</div>
+                    <div class="social-link">@rasansol</div>
+                </div>
+            </a>
+        </div>
     </div>
 
+
+        <a href="https://rasandesign.ir" style="text-decoration: none; color: rgb(255, 255, 255);">
+            <footer style="text-align: center;">
+              <strong>Official Sponsor</strong><br>
+              © 2025 Rasan’s Portfolio<br>
+              <em>Supporting creativity & innovation</em>
+              <br>
+             
+            </footer>
+            
+            </a>
 </div>
 
 <div class="toast" id="toast">
