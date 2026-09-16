@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>مدیریت لینک پرداخت</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#000;
+    color:#fff;
+    font-family:Vazirmatn,Tahoma,sans-serif;
+}
+
+.container{
+    width:min(850px,92%);
+    margin:auto;
+    padding:35px 0 60px;
+}
+
+.header{
+    background:#080808;
+    border:1px solid #252525;
+    border-radius:24px;
+    padding:28px;
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.header h1{
+    font-size:24px;
+    font-weight:800;
+}
+
+.header p{
+    color:#666;
+    font-size:12px;
+    margin-top:6px;
+}
+
+.box{
+    background:#080808;
+    border:1px solid #252525;
+    border-radius:21px;
+    padding:22px;
+    margin-bottom:18px;
+}
+
+.title{
+    font-size:15px;
+    font-weight:800;
+    margin-bottom:15px;
+}
+
+input[type="number"]{
+    width:100%;
+    background:#111;
+    border:1px solid #292929;
+    border-radius:12px;
+    padding:14px;
+    color:#fff;
+    outline:none;
+    font-family:inherit;
+    font-size:14px;
+    direction:ltr;
+    text-align:right;
+}
+
+.options{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.option{
+    position:relative;
+}
+
+.option input{
+    position:absolute;
+    opacity:0;
+}
+
+.option label{
+    display:block;
+    background:#0d0d0d;
+    border:1px solid #292929;
+    border-radius:13px;
+    padding:14px;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:600;
+}
+
+.option input:checked + label{
+    background:#fff;
+    color:#000;
+    border-color:#fff;
+}
+
+.generate{
+    width:100%;
+    background:#fff;
+    color:#000;
+    border:0;
+    border-radius:13px;
+    padding:14px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.result{
+    display:none;
+    margin-top:18px;
+}
+
+.link{
+    background:#050505;
+    border:1px solid #292929;
+    border-radius:12px;
+    padding:13px;
+    direction:ltr;
+    text-align:left;
+    font-family:monospace;
+    font-size:11px;
+    word-break:break-all;
+    color:#ddd;
+}
+
+.share-text{
+    background:#050505;
+    border:1px solid #292929;
+    border-radius:12px;
+    padding:16px;
+    margin-top:12px;
+    color:#ddd;
+    font-size:13px;
+    line-height:2;
+    white-space:pre-wrap;
+}
+
+.copy{
+    width:100%;
+    margin-top:9px;
+    border:0;
+    border-radius:11px;
+    padding:11px;
+    background:#fff;
+    color:#000;
+    font-family:inherit;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.copy.dark{
+    background:#151515;
+    color:#fff;
+    border:1px solid #292929;
+}
+
+.preview{
+    margin-top:13px;
+    color:#777;
+    font-size:11px;
+}
+
+@media(max-width:600px){
+    .options{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>پنل مدیریت پرداخت</h1>
+        <p>ساخت لینک اختصاصی برای دریافت وجه</p>
+    </div>
+
+    <div class="box">
+
+        <div class="title">
+            مبلغ پرداخت
+        </div>
+
+        <input
+            type="number"
+            id="amount"
+            placeholder="مثلاً 1200000">
+
+    </div>
+
+    <div class="box">
+
+        <div class="title">
+            انتخاب بانک‌ها
+        </div>
+
+        <div class="options">
+
+            <div class="option">
+                <input type="checkbox" id="bank1" value="1">
+                <label for="bank1">بانک پارسیان</label>
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="bank2" value="2">
+                <label for="bank2">بانک سپه</label>
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="bank3" value="3">
+                <label for="bank3">بانک اقتصاد نوین</label>
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="bank4" value="4">
+                <label for="bank4">بانک سامان</label>
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="bank5" value="5">
+                <label for="bank5">بانک ملی</label>
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="bank6" value="6">
+                <label for="bank6">بانک کشاورزی</label>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="box">
+
+        <div class="title">
+            ارزهای دیجیتال
+        </div>
+
+        <div class="options">
+
+            <div class="option">
+                <input type="checkbox" id="ton" value="ton">
+                <label for="ton">TON — Toncoin</label>
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="bep20" value="bep20">
+                <label for="bep20">USDT — BEP20</label>
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="trc20" value="trc20">
+                <label for="trc20">USDT — TRC20</label>
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="tron" value="tron">
+                <label for="tron">TRON — TRC20</label>
+            </div>
+
+        </div>
+
+    </div>
+
+    <button
+        class="generate"
+        onclick="generateLink()">
+        ساخت لینک پرداخت
+    </button>
+
+    <div class="result" id="result">
+
+        <div class="box">
+
+            <div class="title">
+                لینک ساخته‌شده
+            </div>
+
+            <div class="link" id="link"></div>
+
+            <button
+                class="copy"
+                onclick="copyLink()">
+                کپی لینک
+            </button>
+
+            <div class="title" style="margin-top:22px;">
+                متن آماده ارسال
+            </div>
+
+            <div class="share-text" id="shareText"></div>
+
+            <button
+                class="copy dark"
+                onclick="copyShareText()">
+                کپی متن تسویه‌حساب
+            </button>
+
+            <div class="preview" id="preview"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let generatedLink = "";
+let generatedShareText = "";
+
+function generateLink(){
+
+    const amount =
+        document.getElementById("amount").value;
+
+    if(!amount || Number(amount)<=0){
+
+        alert("مبلغ را وارد کنید.");
+
+        return;
+    }
+
+    const banks =
+        [...document.querySelectorAll(
+            'input[id^="bank"]:checked'
+        )]
+        .map(el=>el.value);
+
+    const crypto =
+        [...document.querySelectorAll(
+            '#ton:checked,#bep20:checked,#trc20:checked,#tron:checked'
+        )]
+        .map(el=>el.value);
+
+    if(banks.length===0 && crypto.length===0){
+
+        alert("حداقل یک بانک یا ارز را انتخاب کنید.");
+
+        return;
+    }
+
+    let url =
+        "https://no15.ir/pay/rasan-soltani/?amount="
+        + encodeURIComponent(amount);
+
+    if(banks.length){
+
+        url +=
+            "&banks="
+            + banks.join(",");
+    }
+
+    if(crypto.length){
+
+        url +=
+            "&crypto="
+            + crypto.join(",");
+    }
+
+    generatedLink = url;
+
+    document.getElementById("link").textContent =
+        url;
+
+    /* متن رسمی آماده ارسال */
+
+    generatedShareText =
+`جهت تسویه‌حساب، لطفاً مبلغ موردنظر را از طریق لینک زیر پرداخت فرمایید:
+
+${url}
+
+با تشکر`;
+
+    document.getElementById("shareText").textContent =
+        generatedShareText;
+
+    document.getElementById("preview").textContent =
+        "مبلغ: "
+        + Number(amount).toLocaleString("fa-IR")
+        + " تومان | "
+        + "بانک‌ها: "
+        + (banks.length ? banks.join("، ") : "ندارد")
+        + " | ارز: "
+        + (crypto.length ? crypto.join("، ") : "ندارد");
+
+    document.getElementById("result").style.display =
+        "block";
+}
+
+
+function copyLink(){
+
+    if(!generatedLink) return;
+
+    navigator.clipboard.writeText(generatedLink);
+
+    alert("لینک کپی شد ✓");
+}
+
+
+function copyShareText(){
+
+    if(!generatedShareText) return;
+
+    navigator.clipboard.writeText(generatedShareText);
+
+    alert("متن تسویه‌حساب کپی شد ✓");
+}
+
+</script>
+
+</body>
+</html>
