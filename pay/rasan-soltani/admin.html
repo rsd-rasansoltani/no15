@@ -148,6 +148,8 @@ input[type="number"]{
     font-size:13px;
     line-height:2;
     white-space:pre-wrap;
+    direction:rtl;
+    text-align:right;
 }
 
 .copy{
@@ -302,7 +304,7 @@ input[type="number"]{
             </button>
 
             <div class="title" style="margin-top:22px;">
-                متن آماده ارسال
+                متن کامل آماده ارسال
             </div>
 
             <div class="share-text" id="shareText"></div>
@@ -310,7 +312,7 @@ input[type="number"]{
             <button
                 class="copy dark"
                 onclick="copyShareText()">
-                کپی متن تسویه‌حساب
+                کپی کامل متن
             </button>
 
             <div class="preview" id="preview"></div>
@@ -326,6 +328,84 @@ input[type="number"]{
 let generatedLink = "";
 let generatedShareText = "";
 
+
+/* اطلاعات بانک‌ها */
+
+const bankData = {
+
+    "1": {
+        name: "بانک پارسیان",
+        owner: "رحیم سلطانی",
+        card: "6221061263307110",
+        iban: "IR140540126230103514846601"
+    },
+
+    "2": {
+        name: "بانک سپه",
+        owner: "رحیم سلطانی",
+        card: "5892101645866555",
+        iban: "IR240150000003120015310325",
+        extra: "شبا: (راسان سلطانی)"
+    },
+
+    "3": {
+        name: "بانک اقتصاد نوین",
+        owner: "رحیم سلطانی",
+        card: "6274121775135478",
+        iban: "IR470550263144402584498001"
+    },
+
+    "4": {
+        name: "بانک سامان",
+        owner: "رحیم سلطانی",
+        card: "6219861467081880",
+        iban: "IR270560611828007413128001"
+    },
+
+    "5": {
+        name: "بانک ملی",
+        owner: "راسان سلطانی",
+        card: "6037991719441614",
+        iban: "IR900170000000367921567005"
+    },
+
+    "6": {
+        name: "بانک کشاورزی",
+        owner: "راسان سلطانی",
+        card: "6037701214108471",
+        iban: "IR760160000000001136205735"
+    }
+
+};
+
+
+/* اطلاعات ارزهای دیجیتال */
+
+const cryptoData = {
+
+    "ton": {
+        title: "💎 TON",
+        address: "UQDesR_tBH4S9ZOROCgtm1j-R-vXXuECTz9F0AINWPtO4Ewq"
+    },
+
+    "bep20": {
+        title: "💵 USDT | BEP20",
+        address: "0xE6f52D93Af151bb2A9b41064e0B3efd8e4A1Fdf6"
+    },
+
+    "trc20": {
+        title: "💵 USDT | TRC20",
+        address: "TVVek8wQNFnQJt8b7vkURYAbjsbVsuEgi1"
+    },
+
+    "tron": {
+        title: "🔷 TRON | TRC20",
+        address: "TVVek8wQNFnQJt8b7vkURYAbjsbVsuEgi1"
+    }
+
+};
+
+
 function generateLink(){
 
     const amount =
@@ -338,17 +418,24 @@ function generateLink(){
         return;
     }
 
+
+    /* بانک‌های انتخاب‌شده */
+
     const banks =
         [...document.querySelectorAll(
             'input[id^="bank"]:checked'
         )]
         .map(el=>el.value);
 
+
+    /* ارزهای انتخاب‌شده */
+
     const crypto =
         [...document.querySelectorAll(
             '#ton:checked,#bep20:checked,#trc20:checked,#tron:checked'
         )]
         .map(el=>el.value);
+
 
     if(banks.length===0 && crypto.length===0){
 
@@ -357,9 +444,13 @@ function generateLink(){
         return;
     }
 
+
+    /* ساخت لینک */
+
     let url =
         "https://no15.ir/pay/rasan-soltani/?amount="
         + encodeURIComponent(amount);
+
 
     if(banks.length){
 
@@ -368,6 +459,7 @@ function generateLink(){
             + banks.join(",");
     }
 
+
     if(crypto.length){
 
         url +=
@@ -375,54 +467,158 @@ function generateLink(){
             + crypto.join(",");
     }
 
+
     generatedLink = url;
 
     document.getElementById("link").textContent =
         url;
 
-    /* متن رسمی آماده ارسال */
 
-    generatedShareText =
-`جهت تسویه‌حساب، لطفاً مبلغ موردنظر را از طریق لینک زیر پرداخت فرمایید:
+    /* ساخت متن کامل */
+
+    let fullText = "";
+
+    fullText +=
+`💰 مبلغ قابل پرداخت
+
+${Number(amount).toLocaleString("fa-IR")} تومان
+
+━━━━━━━━━━━━━━━━━━
+
+💳 اطلاعات بانکی
+
+━━━━━━━━━━━━━━━━━━
+`;
+
+
+    /* اضافه کردن فقط بانک‌های انتخاب‌شده */
+
+    banks.forEach((bankId, index) => {
+
+        const bank = bankData[bankId];
+
+        fullText +=
+`
+🏦 ${bank.name}
+
+👤 نام صاحب کارت: ${bank.owner}
+💳 شماره کارت: ${bank.card}
+🏷️ شماره شبا: ${bank.iban}
+`;
+
+        if(bank.extra){
+
+            fullText +=
+`👤 ${bank.extra}
+`;
+
+        }
+
+        fullText +=
+`
+━━━━━━━━━━━━━━━━━━
+`;
+
+    });
+
+
+    /* اضافه کردن فقط ارزهای انتخاب‌شده */
+
+    crypto.forEach((cryptoId) => {
+
+        const coin = cryptoData[cryptoId];
+
+        fullText +=
+`
+${coin.title}
+
+📍 آدرس کیف پول:
+
+${coin.address}
+
+━━━━━━━━━━━━━━━━━━
+`;
+
+    });
+
+
+    /* لینک پرداخت */
+
+    fullText +=
+`
+🔗 لینک پرداخت:
 
 ${url}
 
-با تشکر`;
+━━━━━━━━━━━━━━━━━━
+
+لطفاً مبلغ دقیق را از طریق یکی از روش‌های بالا پرداخت فرمایید.
+
+با تشکر
+`;
+
+
+    generatedShareText = fullText;
+
 
     document.getElementById("shareText").textContent =
         generatedShareText;
+
 
     document.getElementById("preview").textContent =
         "مبلغ: "
         + Number(amount).toLocaleString("fa-IR")
         + " تومان | "
         + "بانک‌ها: "
-        + (banks.length ? banks.join("، ") : "ندارد")
+        + (banks.length ? banks.map(id => bankData[id].name).join("، ") : "ندارد")
         + " | ارز: "
-        + (crypto.length ? crypto.join("، ") : "ندارد");
+        + (crypto.length ? crypto.map(id => cryptoData[id].title).join("، ") : "ندارد");
+
 
     document.getElementById("result").style.display =
         "block";
 }
 
 
+/* کپی لینک */
+
 function copyLink(){
 
     if(!generatedLink) return;
 
-    navigator.clipboard.writeText(generatedLink);
+    navigator.clipboard.writeText(generatedLink)
+    .then(() => {
 
-    alert("لینک کپی شد ✓");
+        alert("لینک کپی شد ✓");
+
+    })
+    .catch(() => {
+
+        alert("کپی لینک انجام نشد.");
+
+    });
+
 }
 
+
+/* کپی کل متن */
 
 function copyShareText(){
 
     if(!generatedShareText) return;
 
-    navigator.clipboard.writeText(generatedShareText);
+    navigator.clipboard.writeText(generatedShareText)
+    .then(() => {
 
-    alert("متن تسویه‌حساب کپی شد ✓");
+        alert("متن کامل کپی شد ✓");
+
+    })
+    .catch(() => {
+
+        alert("کپی متن انجام نشد.");
+
+    });
+
 }
 
 </script>
