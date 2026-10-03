@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>404 | صفحه پیدا نشد</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f7f7f7;
+            color: #171717;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        .number {
+            font-size: clamp(100px, 25vw, 220px);
+            line-height: .8;
+            font-weight: 900;
+            letter-spacing: -10px;
+            color: #111;
+            margin-bottom: 35px;
+        }
+
+        .line {
+            width: 55px;
+            height: 5px;
+            background: #111;
+            border-radius: 10px;
+            margin: 0 auto 25px;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #666;
+            font-size: 16px;
+            line-height: 2;
+            margin: 0 auto 30px;
+            max-width: 500px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        a {
+            text-decoration: none;
+            padding: 13px 25px;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: .2s ease;
+        }
+
+        .home {
+            background: #111;
+            color: white;
+        }
+
+        .back {
+            border: 1px solid #ddd;
+            color: #222;
+            background: white;
+        }
+
+        a:hover {
+            transform: translateY(-2px);
+            opacity: .85;
+        }
+
+        .footer {
+            margin-top: 55px;
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        @media (max-width: 500px) {
+            .number {
+                letter-spacing: -5px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <div class="number">404</div>
+
+        <div class="line"></div>
+
+        <h1>صفحه پیدا نشد!</h1>
+
+        <p>
+            متأسفانه صفحه‌ای که به دنبال آن هستید وجود ندارد،
+            حذف شده یا آدرس آن تغییر کرده است.
+        </p>
+
+        <div class="buttons">
+
+            <a href="/" class="home">
+                بازگشت به صفحه اصلی
+            </a>
+
+            <a href="javascript:history.back()" class="back">
+                صفحه قبلی
+            </a>
+
+        </div>
+
+        <div class="footer">
+            © 2026 — تمامی حقوق محفوظ است.
+        </div>
+
+    </main>
+
+</body>
+</html>
