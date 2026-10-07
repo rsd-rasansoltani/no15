@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تیپ‌نما · آزمون شخصیت MBTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f3efe6;
+  --surface: #faf7f0;
+  --paper: #fffcf7;
+  --ink: #1c1916;
+  --muted: #6a635c;
+  --faint: #9a9289;
+  --line: #e4ddd2;
+  --accent: #1f5c57;
+  --accent-fg: #f4f0e8;
+  --accent-soft: #e4eeeb;
+  --danger: #8a3a32;
+  --radius: 12px;
+  --font: "Vazirmatn", system-ui, sans-serif;
+  --display: "Fraunces", "Vazirmatn", serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  min-height: 100dvh;
+}
+button { font-family: inherit; cursor: pointer; }
+button:disabled { opacity: .4; cursor: not-allowed; }
+h1,h2,h3 { text-wrap: balance; font-weight: 600; }
+p { text-wrap: pretty; }
+.hidden { display: none !important; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+.mark {
+  width: 32px; height: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; flex-shrink: 0;
+}
+.mark span {
+  border-radius: 3px; background: var(--accent);
+}
+.mark span:nth-child(2), .mark span:nth-child(3) { opacity: .45; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  height: 48px; padding: 0 1.25rem; border-radius: 10px; border: none;
+  font-size: .95rem; font-weight: 500; transition: opacity .15s, transform .15s, background .15s;
+}
+.btn:active:not(:disabled) { transform: scale(.98); }
+.btn-primary { background: var(--accent); color: var(--accent-fg); }
+.btn-primary:hover:not(:disabled) { opacity: .92; }
+.btn-secondary {
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line);
+}
+.btn-secondary:hover:not(:disabled) { background: var(--accent-soft); }
+.btn-ghost { background: transparent; color: var(--ink); height: 40px; padding: 0 .75rem; }
+.btn-ghost:hover:not(:disabled) { background: var(--accent-soft); }
+.input {
+  width: 100%; height: 48px; padding: 0 1rem; border-radius: 10px;
+  border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+  font-size: 1rem; font-family: inherit;
+}
+.input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(31,92,87,.2); }
+.input::placeholder { color: var(--faint); }
+.card {
+  background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem;
+}
+.progress {
+  height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; margin: 1rem 0;
+}
+.progress > i {
+  display: block; height: 100%; background: var(--accent); border-radius: 99px;
+  transition: width .3s cubic-bezier(.22,1,.36,1);
+}
+.likert {
+  display: flex; gap: .4rem; max-width: 420px; margin: 0 auto;
+}
+.likert button {
+  flex: 1; height: 52px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--paper); display: flex; align-items: center; justify-content: center;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.likert button span {
+  width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--muted);
+}
+.likert button.on {
+  background: var(--accent); border-color: var(--accent); color: var(--accent-fg);
+}
+.likert button.on span { border-color: var(--accent-fg); background: var(--accent-fg); }
+.likert-labels {
+  display: flex; justify-content: space-between; max-width: 420px; margin: .5rem auto 0;
+  font-size: .7rem; color: var(--faint);
+}
+.chip {
+  display: inline-block; padding: .25rem .75rem; border-radius: 99px;
+  border: 1px solid var(--line); background: var(--paper); font-size: .75rem; color: var(--muted);
+}
+.chip.accent { background: var(--accent-soft); border-color: transparent; color: var(--accent); }
+.bar-row { margin-bottom: 1.4rem; }
+.bar-track {
+  display: flex; height: 12px; border-radius: 99px; overflow: hidden; background: var(--line);
+}
+.bar-track > i { display: block; height: 100%; }
+.bar-track .dom { background: var(--accent); }
+.bar-track .sub { background: rgba(28,25,22,.18); }
+.bar-meta { display: flex; justify-content: space-between; font-size: .75rem; color: var(--faint); margin-top: .35rem; }
+.bar-title { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: .4rem; }
+.trait-grid { display: grid; gap: .75rem; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .trait-grid { grid-template-columns: 1fr 1fr; } }
+.trait-card {
+  border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: .85rem 1rem;
+}
+.trait-card .mini {
+  height: 6px; background: var(--line); border-radius: 99px; margin-top: .5rem; overflow: hidden;
+}
+.trait-card .mini i { display: block; height: 100%; background: var(--accent); }
+.freq-row { display: flex; align-items: center; gap: .5rem; margin-bottom: .35rem; }
+.freq-row .code { width: 42px; font-family: var(--display); font-size: .8rem; color: var(--faint); }
+.freq-row.mine .code { color: var(--accent); font-weight: 600; }
+.freq-track { flex: 1; height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.freq-track i { display: block; height: 100%; background: rgba(28,25,22,.2); border-radius: 99px; }
+.freq-row.mine .freq-track i { background: var(--accent); }
+.freq-pct { width: 48px; font-size: .75rem; color: var(--muted); direction: ltr; text-align: left; }
+.purity-ring {
+  width: 140px; height: 140px; margin: 0 auto; position: relative;
+}
+.purity-ring svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+.purity-ring .center {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.purity-ring .center strong { font-family: var(--display); font-size: 1.75rem; font-weight: 600; }
+.purity-ring .center span { font-size: .65rem; color: var(--muted); }
+.section { margin-top: 2.5rem; scroll-margin-top: 5rem; }
+.section h2 { font-size: 1.2rem; margin-bottom: .75rem; }
+.section .kicker { font-size: .7rem; letter-spacing: .08em; color: var(--accent); font-weight: 500; margin-bottom: .15rem; }
+.two-col { display: grid; gap: 1rem; }
+@media (min-width: 560px) { .two-col { grid-template-columns: 1fr 1fr; } }
+.three-col { display: grid; gap: 1rem; }
+@media (min-width: 640px) { .three-col { grid-template-columns: 1fr 1fr 1fr; } }
+.list-block h3 { font-size: .9rem; margin-bottom: .4rem; }
+.list-block ul { list-style: none; }
+.list-block li {
+  font-size: .9rem; color: var(--muted); padding: .2rem 0; line-height: 1.55;
+}
+.list-block li::before { content: "· "; color: var(--accent); }
+.fn-grid { display: grid; gap: .75rem; grid-template-columns: 1fr; }
+@media (min-width: 480px) { .fn-grid { grid-template-columns: 1fr 1fr; } }
+.fn-card {
+  border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: .85rem 1rem;
+}
+.fn-card .role { font-size: .7rem; color: var(--muted); }
+.border-accent { border-right: 3px solid var(--accent); padding-right: .85rem; margin-bottom: 1rem; }
+.toc {
+  list-style: none; display: grid; gap: .35rem;
+}
+@media (min-width: 480px) { .toc { grid-template-columns: 1fr 1fr; } }
+.toc a { color: var(--ink); text-decoration: none; font-size: .9rem; }
+.toc a:hover { color: var(--accent); }
+.sticky-bar {
+  position: sticky; top: 0; z-index: 20;
+  background: rgba(243,239,230,.95); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line); padding: .75rem 1rem;
+}
+.sticky-inner {
+  max-width: 720px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+}
+.radar-wrap { width: 100%; max-width: 360px; margin: 0 auto; direction: ltr; }
+.stats-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin: 1.5rem 0;
+}
+.stat {
+  text-align: center; border: 1px solid var(--line); background: var(--paper);
+  border-radius: var(--radius); padding: 1rem .5rem;
+}
+.stat strong { font-family: var(--display); font-size: 1.5rem; color: var(--accent); display: block; }
+.stat span { font-size: .7rem; color: var(--muted); }
+.footer-note { font-size: .75rem; color: var(--faint); line-height: 1.5; border-top: 1px solid var(--line); padding-top: 1rem; margin-top: 1.5rem; }
+.alert {
+  background: var(--accent-soft); border-radius: 10px; padding: .85rem 1rem;
+  font-size: .9rem; line-height: 1.55; margin-top: 1rem;
+}
+
+@media print {
+  @page { size: A4; margin: 14mm 12mm; }
+  body { background: #fff !important; color: #1c1916 !important; }
+  .no-print { display: none !important; }
+  .print-break { break-before: page; }
+  .print-avoid { break-inside: avoid; }
+  .sticky-bar { position: static; background: none; border: none; }
+  a { text-decoration: none; color: inherit; }
+  .wrap { max-width: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<!-- HOME -->
+<div id="view-home" class="wrap">
+  <header style="display:flex;align-items:center;gap:.75rem;margin-bottom:2rem">
+    <div class="mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div>
+      <div style="font-weight:500;color:var(--accent);font-size:.9rem">تیپ‌نما</div>
+      <div style="font-size:.75rem;color:var(--muted)">آزمون تیپ‌شناسی مایرز–بریگز</div>
+    </div>
+  </header>
+  <p style="font-family:var(--display);font-size:.8rem;letter-spacing:.15em;color:var(--muted)">MBTI ASSESSMENT</p>
+  <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);line-height:1.25;margin:.75rem 0 1rem;max-width:20ch">نقشه دقیق شخصیت شما، در یک گزارش قابل چاپ</h1>
+  <p style="color:var(--muted);max-width:40ch;margin-bottom:1.5rem">
+    شصت پرسش طیف‌دار، چهار بعد کلاسیک شخصیت، و گزارشی کامل شامل نمودارها، خلوص تیپ، روابط، شغل، کتاب و مسیر رشد.
+  </p>
+  <div class="stats-row">
+    <div class="stat"><strong>۱۶</strong><span>تیپ شخصیتی</span></div>
+    <div class="stat"><strong>۶۰</strong><span>پرسش دقیق</span></div>
+    <div class="stat"><strong>۱۸</strong><span>بخش گزارش</span></div>
+  </div>
+  <form id="start-form" class="card" style="margin-top:1rem" onsubmit="return startQuiz(event)">
+    <label for="user-name" style="font-size:.9rem;font-weight:500">نام شما روی گزارش</label>
+    <input id="user-name" class="input" style="margin-top:.5rem" placeholder="مثلاً سارا محمدی" autocomplete="name">
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem">
+      <button type="submit" class="btn btn-primary" style="flex:1">شروع آزمون</button>
+      <button type="button" class="btn btn-secondary" onclick="loadSample()">گزارش نمونه</button>
+    </div>
+    <button type="button" id="btn-continue" class="btn btn-ghost hidden" style="margin-top:.75rem;width:100%" onclick="continueQuiz()"></button>
+    <button type="button" id="btn-resume-result" class="btn btn-ghost hidden" style="margin-top:.5rem;width:100%" onclick="showResults()"></button>
+  </form>
+  <p class="footer-note">
+    تیپ MBTI مدل ترجیح است نه برچسب قطعی. افراد مشهور بر اساس برآوردهای غیررسمی آمده‌اند. این آزمون جایگزین مشاوره بالینی نیست.
+  </p>
+</div>
+
+<!-- QUIZ -->
+<div id="view-quiz" class="wrap hidden">
+  <header class="no-print" style="display:flex;align-items:center;justify-content:space-between;gap:.75rem">
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <div class="mark" style="width:24px;height:24px;gap:2px"><span></span><span></span><span></span><span></span></div>
+      <span style="font-size:.9rem;font-weight:500">تیپ‌نما</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <span id="quiz-counter" style="font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums"></span>
+      <button type="button" class="btn btn-ghost" onclick="exitQuiz()">خروج</button>
+    </div>
+  </header>
+  <div class="progress"><i id="quiz-progress" style="width:0%"></i></div>
+  <p id="quiz-name" style="font-size:.75rem;color:var(--faint);margin-bottom:1.5rem"></p>
+  <main style="padding:1.5rem 0 2rem">
+    <p style="font-size:.75rem;color:var(--accent);font-weight:500" id="quiz-qnum"></p>
+    <h2 id="quiz-text" style="font-size:clamp(1.25rem,3vw,1.65rem);line-height:1.4;margin:.5rem 0 2rem"></h2>
+    <div class="likert-labels"><span>کاملاً مخالف</span><span>کاملاً موافق</span></div>
+    <div class="likert" id="likert" role="group" aria-label="میزان موافقت"></div>
+  </main>
+  <footer style="display:flex;justify-content:space-between;gap:1rem;padding-bottom:1rem">
+    <button type="button" class="btn btn-ghost" id="btn-prev" onclick="prevQ()">قبلی</button>
+    <button type="button" class="btn btn-secondary" id="btn-next" onclick="nextQ()">بعدی</button>
+    <button type="button" class="btn btn-primary hidden" id="btn-finish" onclick="finishQuiz()">مشاهده گزارش</button>
+  </footer>
+</div>
+
+<!-- RESULTS -->
+<div id="view-results" class="hidden">
+  <div class="sticky-bar no-print">
+    <div class="sticky-inner">
+      <div style="display:flex;align-items:center;gap:.5rem">
+        <div class="mark" style="width:24px;height:24px;gap:2px"><span></span><span></span><span></span><span></span></div>
+        <span style="font-size:.9rem;font-weight:500" id="res-bar-title">گزارش</span>
+      </div>
+      <div style="display:flex;gap:.5rem">
+        <button type="button" class="btn btn-secondary" style="height:40px;font-size:.85rem" onclick="resetAll()">آزمون تازه</button>
+        <button type="button" class="btn btn-primary" style="height:40px;font-size:.85rem" onclick="window.print()">چاپ / PDF</button>
+      </div>
+    </div>
+  </div>
+  <article class="wrap" id="report-body"></article>
+</div>
+
+<script>
+/* ========== DATA ========== */
+const QUESTIONS = [
+  {id:1,d:"EI",p:"E",t:"بعد از بودن کنار آدم‌ها معمولاً سرحال‌تر و پرانرژی‌تر می‌شوم."},
+  {id:2,d:"EI",p:"I",t:"برای بازیابی انرژی، به زمان تنها بودن و سکوت نیاز دارم."},
+  {id:3,d:"EI",p:"E",t:"در جمع‌های جدید به‌راحتی حرف را شروع می‌کنم."},
+  {id:4,d:"EI",p:"I",t:"ترجیح می‌دهم قبل از حرف زدن، کامل در ذهن خودم فکر کنم."},
+  {id:5,d:"EI",p:"E",t:"شبکه ارتباطی گسترده برایم طبیعی و لذت‌بخش است."},
+  {id:6,d:"EI",p:"I",t:"چند رابطه عمیق را به آشنایی‌های زیاد ترجیح می‌دهم."},
+  {id:7,d:"EI",p:"E",t:"با صدای بلند فکر کردن به من کمک می‌کند ایده‌ام شکل بگیرد."},
+  {id:8,d:"EI",p:"I",t:"در مهمانی شلوغ، بعد از مدتی دلم می‌خواهد کمی کنار بکشم."},
+  {id:9,d:"EI",p:"E",t:"وقتی تنها می‌مانم، زود حوصله‌ام سر می‌رود و سراغ دیگران می‌روم."},
+  {id:10,d:"EI",p:"I",t:"کارهای متمرکز و بی‌وقفهٔ فردی را بهتر از کار گروهی پیش می‌برم."},
+  {id:11,d:"EI",p:"E",t:"در جلسات، خودجوش نظر می‌دهم و از بحث زنده انرژی می‌گیرم."},
+  {id:12,d:"EI",p:"I",t:"ترجیح می‌دهم نظرم را بنویسم یا بعد از جلسه خصوصی بگویم."},
+  {id:13,d:"EI",p:"E",t:"آشنا شدن با غریبه‌ها برایم ساده و حتی هیجان‌انگیز است."},
+  {id:14,d:"EI",p:"I",t:"تلفن زدن ناگهانی برایم سخت‌تر از پیام دادن است."},
+  {id:15,d:"EI",p:"E",t:"آخر هفته‌ام را با برنامه اجتماعی پر می‌کنم تا زنده بمانم."},
+  {id:16,d:"SN",p:"S",t:"به جزئیات واقعی و تجربهٔ ملموس بیشتر اعتماد دارم تا به حدس و نظریه."},
+  {id:17,d:"SN",p:"N",t:"زود الگوی پنهان و معنای پشت رویدادها را می‌بینم."},
+  {id:18,d:"SN",p:"S",t:"دستورالعمل گام‌به‌گام را به راهنمای کلی و مفهومی ترجیح می‌دهم."},
+  {id:19,d:"SN",p:"N",t:"از فکر کردن به «چه می‌شد اگر» و امکانات آینده لذت می‌برم."},
+  {id:20,d:"SN",p:"S",t:"در گفتگو بیشتر سراغ واقعیت‌ها، عدد و مثال مشخص می‌روم."},
+  {id:21,d:"SN",p:"N",t:"استعاره‌ها، نمادها و ایده‌های انتزاعی برایم جذاب‌اند."},
+  {id:22,d:"SN",p:"S",t:"مهارت را با تمرین عملی و تکرار بهتر یاد می‌گیرم تا با نظریه."},
+  {id:23,d:"SN",p:"N",t:"گاهی آن‌قدر در ایده غرق می‌شوم که جزئیات اجرایی را از قلم می‌اندازم."},
+  {id:24,d:"SN",p:"S",t:"«اینجا و اکنون» برایم مهم‌تر از سناریوهای دور است."},
+  {id:25,d:"SN",p:"N",t:"از کارهای تکراری زود خسته می‌شوم مگر اینکه معنای تازه‌ای در آن پیدا کنم."},
+  {id:26,d:"SN",p:"S",t:"حافظه‌ام بیشتر پر از جزئیات حسی است: چه دیدم، شنیدم و انجام دادم."},
+  {id:27,d:"SN",p:"N",t:"وقتی کسی خاطره‌ای تعریف می‌کند، ذهنم سریع به ارتباط‌ها و آینده می‌پرد."},
+  {id:28,d:"SN",p:"S",t:"تغییر را وقتی می‌پذیرم که فایدهٔ عملی‌اش روشن باشد."},
+  {id:29,d:"SN",p:"N",t:"حتی در کار روزمره به دنبال راه نو و زاویهٔ تازه می‌گردم."},
+  {id:30,d:"SN",p:"S",t:"توصیف دقیق یک موقعیت برایم راحت‌تر از تفسیر فلسفی آن است."},
+  {id:31,d:"TF",p:"T",t:"در تصمیم‌گیری، منطق و پیامد عینی را جلوتر از احساسات می‌گذارم."},
+  {id:32,d:"TF",p:"F",t:"تأثیر تصمیم روی آدم‌ها برایم به اندازهٔ خود نتیجه اهمیت دارد."},
+  {id:33,d:"TF",p:"T",t:"نقد صریح را مفید می‌دانم، حتی اگر کمی تند به نظر برسد."},
+  {id:34,d:"TF",p:"F",t:"قبل از گفتن حقیقت تلخ، به لحن و احساس طرف مقابل فکر می‌کنم."},
+  {id:35,d:"TF",p:"T",t:"دوست دارم مسائل را بی‌طرف و مثل یک مسئله تحلیلی ببینم."},
+  {id:36,d:"TF",p:"F",t:"هماهنگی جمع و رضایت آدم‌ها انگیزهٔ مهمی در کارم است."},
+  {id:37,d:"TF",p:"T",t:"وقتی کسی احساسی برخورد می‌کند، دلم می‌خواهد بحث را به استدلال برگردانم."},
+  {id:38,d:"TF",p:"F",t:"به‌راحتی خودم را جای دیگران می‌گذارم و حال‌شان را حس می‌کنم."},
+  {id:39,d:"TF",p:"T",t:"عدالت یعنی قواعد یکسان، نه استثنا به‌خاطر رابطه."},
+  {id:40,d:"TF",p:"F",t:"گاهی قاعده را به‌خاطر شرایط انسانی یک فرد خاص نرم می‌کنم."},
+  {id:41,d:"TF",p:"T",t:"در تعارض، اول می‌خواهم بفهمم حق با کیست، بعد به آشتی فکر می‌کنم."},
+  {id:42,d:"TF",p:"F",t:"در تعارض، حفظ رابطه برایم معمولاً مهم‌تر از برنده شدن در بحث است."},
+  {id:43,d:"TF",p:"T",t:"تعریف و تمجید را وقتی جدی می‌گیرم که مشخص و مبتنی بر عملکرد باشد."},
+  {id:44,d:"TF",p:"F",t:"تشویق گرم و قدردانی شخصی، حسابی به من انرژی می‌دهد."},
+  {id:45,d:"TF",p:"T",t:"تصمیم‌های مهم را با فهرست مزایا و معایب پیش می‌برم."},
+  {id:46,d:"JP",p:"J",t:"داشتن برنامه مشخص برای روز و هفته حالم را آرام می‌کند."},
+  {id:47,d:"JP",p:"P",t:"ترجیح می‌دهم گزینه‌ها را باز بگذارم و در لحظه تصمیم بگیرم."},
+  {id:48,d:"JP",p:"J",t:"کارها را زود تمام می‌کنم تا خیال‌ام از بابت موعد راحت باشد."},
+  {id:49,d:"JP",p:"P",t:"نزدیک شدن ضرب‌الاجل معمولاً بهترین تمرکزم را می‌آورد."},
+  {id:50,d:"JP",p:"J",t:"از فهرست کارها، تقویم و نظم بیرونی واقعاً استفاده می‌کنم."},
+  {id:51,d:"JP",p:"P",t:"زیاد برنامه‌ریزی کردن حس محدودیت به من می‌دهد."},
+  {id:52,d:"JP",p:"J",t:"اتاق و میز مرتب به من حس کنترل و آمادگی می‌دهد."},
+  {id:53,d:"JP",p:"P",t:"کمی بی‌نظمی خلاق برایم طبیعی است و ایده‌هایم در آن پیدا می‌شوند."},
+  {id:54,d:"JP",p:"J",t:"وقتی برنامه ناگهان عوض می‌شود، تا دوباره نظم بگیرم ناراحت می‌شوم."},
+  {id:55,d:"JP",p:"P",t:"تغییر مسیر ناگهانی را بیشتر فرصت می‌بینم تا اختلال."},
+  {id:56,d:"JP",p:"J",t:"دوست دارم تصمیم را ببندم و سراغ مرحله بعد بروم."},
+  {id:57,d:"JP",p:"P",t:"حتی بعد از تصمیم، اگر داده تازه‌ای بیاید راحت مسیر را عوض می‌کنم."},
+  {id:58,d:"JP",p:"J",t:"سفر و پروژه را از قبل با جزئیات می‌چینم."},
+  {id:59,d:"JP",p:"P",t:"سفر بدون برنامهٔ سفت‌وسخت برایم آزادتر و جذاب‌تر است."},
+  {id:60,d:"JP",p:"J",t:"ناتمام ماندن کارها ذهنم را مشغول و بی‌قرار می‌کند."}
+];
+
+const META = {
+  EI:{L:"E",R:"I",Lf:"برون‌گرایی",Rf:"درون‌گرایی",title:"منبع انرژی"},
+  SN:{L:"S",R:"N",Lf:"حس‌گرایی",Rf:"شهود",title:"گردآوری اطلاعات"},
+  TF:{L:"T",R:"F",Lf:"تفکر",Rf:"احساس",title:"تصمیم‌گیری"},
+  JP:{L:"J",R:"P",Lf:"داوری",Rf:"ادراک",title:"سبک زندگی"}
+};
+const LETTER_FA = {
+  E:{fa:"برون‌گرایی",hint:"انرژی از تعامل و دنیای بیرون"},
+  I:{fa:"درون‌گرایی",hint:"انرژی از تأمل و دنیای درون"},
+  S:{fa:"حس‌گرایی",hint:"واقعیت، جزئیات و تجربه ملموس"},
+  N:{fa:"شهود",hint:"الگوها، معانی و امکانات آینده"},
+  T:{fa:"تفکر",hint:"منطق، تحلیل و معیارهای عینی"},
+  F:{fa:"احساس",hint:"ارزش‌ها، همدلی و تأثیر انسانی"},
+  J:{fa:"داوری",hint:"ساختار، برنامه و جمع‌بندی"},
+  P:{fa:"ادراک",hint:"انعطاف، کشف و باز ماندن گزینه‌ها"}
+};
+const FREQ = {ISFJ:13.8,ESFJ:12.3,ISTJ:11.6,ISFP:8.8,ESTJ:8.7,ESFP:8.5,ENFP:8.1,ISTP:5.4,INFP:4.4,ESTP:4.3,INTP:3.3,ENTP:3.2,ENFJ:2.5,INTJ:2.1,ENTJ:1.8,INFJ:1.5};
+
+const PROFILES = {
+INTJ:{code:"INTJ",nick:"معمار",title:"استراتژیست مستقل",slogan:"جهان را با نقشه، منطق و چشم‌انداز بلندمدت از نو می‌چینم.",
+identity:"تیپ INTJ ذهنی آینده‌نگر، مستقل و نظام‌ساز است. شهود درون‌گرا به او اجازه می‌دهد الگوهای پنهان را ببیند و مسیر چندساله را طراحی کند؛ تفکر برون‌گرا آن نقشه را به تصمیم و ساختار تبدیل می‌کند. معمار از شلوغی نمایشی بیزار است، استاندارد بالایی برای خود و دیگران دارد و تا وقتی ایده به مدلی منسجم نرسد آرام نمی‌گیرد.",
+fns:[{c:"Ni",n:"شهود درون‌گرا",r:"dominant"},{c:"Te",n:"تفکر برون‌گرا",r:"auxiliary"},{c:"Fi",n:"احساس درون‌گرا",r:"tertiary"},{c:"Se",n:"حس برون‌گرا",r:"inferior"}],
+traits:[{n:"چشم‌انداز استراتژیک",t:"مسائل را از بالا می‌بیند و چند حرکت جلوتر را حساب می‌کند."},{n:"استقلال فکری",t:"مرجع نهایی او استدلال است، نه اجماع یا سنت."},{n:"استاندارد بالا",t:"کار نیمه‌کاره یا استدلال سست را تحمل نمی‌کند."},{n:"ذخیره هیجانی",t:"احساس را درونی نگه می‌دارد و دیر نشان می‌دهد."},{n:"کارایی",t:"هر فرایند را تا حد ممکن ساده و هدفمند می‌خواهد."},{n:"آینده‌نگری",t:"تصمیم امروز را با تصویر پنج‌سال بعد می‌سنجد."}],
+str:["طراحی سیستم و استراتژی بلندمدت","تمرکز عمیق روی هدف پیچیده","تصمیم آرام در ابهام","یادگیری خودآموز","صراحت فکری","مقاومت در برابر فشار اجتماعی"],
+weak:["بی‌صبری با کندی دیگران","کم‌توجهی به نیازهای هیجانی","کمال‌گرایی","انزوا","سخت‌گیری با خود","غفلت از لحظه حال"],
+romance:{s:"در عشق به‌دنبال شریک فکری است. دیر اعتماد می‌کند اما وقتی متعهد شود وفادار و عمیق است.",as:["وفادار و برنامه‌ریز","احترام به استقلال شریک","محبت با عمل نه نمایش","فاصله از نمایش عمومی احساس"],need:["فضای تنهایی","صداقت مستقیم","شریک ایده‌پذیر"],ch:["ابراز دیرهنگام احساس","تمایل به «درست کردن» طرف","اولویت کار بر وقت عاطفی"]},
+social:{s:"حلقه کوچک، گفتگوی عمیق، فاصله از معاشرت بی‌هدف.",w:["دوستی کم‌تعداد اما طولانی","صراحت که گاهی تندی خوانده می‌شود","کمک عملی به‌جای همدلی کلامی"],c:["بحث را منطقی می‌کند","بی‌منطقی را با قطع انرژی پاسخ می‌دهد","نیاز به زمان تحلیل قبل از پاسخ"]},
+famous:[{n:"فریدریش نیچه",note:"فیلسوف"},{n:"ایلان ماسک",note:"کارآفرین (برآورد)"},{n:"نیکولا تسلا",note:"مخترع"},{n:"کریستوفر نولان",note:"کارگردان"},{n:"استیون هاوکینگ",note:"فیزیکدان"},{n:"هیلاری کلینتون",note:"سیاستمدار"}],
+chars:[{n:"گاندالف",note:"ارباب حلقه‌ها"},{n:"بتمن",note:"شوالیه تاریکی"},{n:"لیزابن سالاندر",note:"دختری با خالکوبی اژدها"}],
+work:{s:"استراتژیست، معمار سیستم، پژوهشگر ارشد. از جلسات بی‌نتیجه و کارهای تکراری بیزار است.",lead:"چشم‌انداز می‌دهد و با شایستگی پاداش می‌دهد.",col:"قابل اتکا در مسئله سخت؛ استاندارد بالا.",emp:"با هدف روشن و آزادی عمل بسیار پربازده است."},
+careers:[{t:"معماری نرم‌افزار",f:"ساختار پیچیده"},{t:"استراتژی و مشاوره",f:"تحلیل سیستم"},{t:"پژوهش و داده",f:"عمق تخصصی"},{t:"مهندسی محصول",f:"مدل کارآمد"},{t:"حقوق و سیاست",f:"استدلال ساختاری"},{t:"تحلیل مالی",f:"مدل‌سازی آینده"},{t:"نویسندگی تحلیلی",f:"ایده‌های بزرگ"},{t:"کارآفرینی فناورانه",f:"ساخت از صفر"}],
+job:{drv:["استقلال","چالش فکری","تأثیر بلندمدت","شایستگی همکاران"],kill:["بوروکراسی","کار تکراری","مدیریت سیاسی","جلسات بی‌دستورکار"],env:"محیط آرام، هدف‌محور، با افراد متخصص."},
+dev:{areas:["هوش هیجانی","تحمل ابهام انسانی","مراقبت از بدن","واگذاری کار ناقص"],prac:["بازخورد همدلانه قبل از نقد","ورزش روزانه","تحویل نسخه ۸۰٪","یک رابطه اجتماعی منظم"]},
+books:[{t:"Gifts Differing",a:"Isabel Briggs Myers",w:"مبنای کلاسیک MBTI"},{t:"Thinking, Fast and Slow",a:"دنیل کانمن",w:"تصمیم‌گیری"},{t:"Atomic Habits",a:"جیمز کلییر",w:"عادت اجرایی"},{t:"Quiet",a:"سوزان کین",w:"قدرت درون‌گرایی"}],
+advice:["نقشه را با نسخه کوچک آزمایش کنید.","احساس دیگران داده است نه نویز.","هفته‌ای یک گفتگوی غیرکاری رزرو کنید.","بدن را سیستم حیاتی ببینید.","در نقد، اول نیت خوب را نام ببرید."],
+similar:["INTP","ENTJ","INFJ","ISTJ"]},
+INTP:{code:"INTP",nick:"منطق‌دان",title:"کاوشگر ایده‌ها",slogan:"حقیقت را تا ته می‌کاوم، حتی اگر ساختمانی که به آن عادت داریم فرو بریزد.",
+identity:"INTP با تفکر درون‌گرا دنیا را مدل می‌کند. عاشق دقت مفهومی و پرسش از بدیهیات است. شهود برون‌گرا پنجره امکانات را باز می‌کند. از اجبار اجتماعی و تکرار بی‌معنا فاصله می‌گیرد.",
+fns:[{c:"Ti",n:"تفکر درون‌گرا",r:"dominant"},{c:"Ne",n:"شهود برون‌گرا",r:"auxiliary"},{c:"Si",n:"حس درون‌گرا",r:"tertiary"},{c:"Fe",n:"احساس برون‌گرا",r:"inferior"}],
+traits:[{n:"دقت مفهومی",t:"تعریف‌ها را می‌شکافد تا ناسازگاری پیدا شود."},{n:"کنجکاوی",t:"هر پاسخ، سوال تازه‌ای می‌زاید."},{n:"انعطاف ذهنی",t:"فرض را با داده تازه عوض می‌کند."},{n:"فاصله از تشریفات",t:"سلسله‌مراتب برایش وزن منطقی ندارد."},{n:"طنز خشک",t:"با تناقض‌ها شوخی می‌سازد."},{n:"تحلیل تنها",t:"ساعت‌ها با یک مسئله می‌ماند."}],
+str:["تحلیل پیچیده","خلاقیت مفهومی","بی‌طرفی نسبی","یادگیری سریع","استقلال از تأیید","طراحی چارچوب"],
+weak:["تعلل در اجرا","غفلت از جزئیات عملی","بی‌توجهی به آداب","پراکندگی علایق","حساسیت به نقد فکری","سختی توضیح ساده"],
+romance:{s:"عشق باید فضای فکر و آزادی بدهد. محبت را با وقت و ایده نشان می‌دهد.",as:["وفادار با حفظ آزادی","گفتگوی شبانه عمیق","کم‌توقع در نمایش","پذیرای تفاوت فکری"],need:["احترام به خلوت","صبر در پاسخ هیجانی","شریک اجرایی"],ch:["فراموشی مناسبت‌ها","تحلیل بیش از حد احساس","فرار به ذهن در تنش"]},
+social:{s:"در جمع کوچک متخصص زنده است.",w:["دوستی بر پایه ایده","ممکن است ناگهان غیب شود","از گفتگوی سطحی خارج می‌شود"],c:["بحث را انتزاعی می‌کند","دفاع تند از منطق","آشتی هیجانی سخت"]},
+famous:[{n:"آلبرت اینشتین",note:"فیزیکدان"},{n:"رنه دکارت",note:"فیلسوف"},{n:"بیل گیتس",note:"کارآفرین"},{n:"ماری کوری",note:"دانشمند"},{n:"لری پیج",note:"گوگل"}],
+chars:[{n:"شرلوک هولمز",note:"دویل"},{n:"نئو",note:"ماتریکس"},{n:"L",note:"Death Note"}],
+work:{s:"پژوهش، طراحی سیستم، برنامه‌نویسی، تحلیل.",lead:"رهبر فکری نه فرمانده.",col:"منبع ایده؛ پیگیری اداری ضعیف.",emp:"با مسئله سخت و استقلال عالی."},
+careers:[{t:"علوم رایانه",f:"مدل‌سازی"},{t:"فلسفه و ریاضی",f:"دقت مفهومی"},{t:"تحلیل داده",f:"الگو"},{t:"توسعه نرم‌افزار",f:"ابزار دقیق"},{t:"نویسندگی علمی",f:"صورت‌بندی"},{t:"معماری اطلاعات",f:"ساختار پنهان"}],
+job:{drv:["آزادی فکری","مسئله تازه","عمق","همکاران باهوش"],kill:["سلسله‌مراتب خشک","گزارش نمایشی","کار تکراری","فشار اجتماعی"],env:"آرام، منعطف، با زمان تمرکز."},
+dev:{areas:["پیگیری","هوش اجتماعی","مراقبت بدنی","تصمیم به‌موقع"],prac:["پومودورو","تعهد اجتماعی کوچک","مهلت برای تصمیم","نام بردن احساس"]},
+books:[{t:"Gödel, Escher, Bach",a:"هافستادر",w:"ذهن سیستم‌ساز"},{t:"Deep Work",a:"کال نیوپورت",w:"تمرکز"},{t:"Getting Things Done",a:"دیوید آلن",w:"خروج از تعلل"}],
+advice:["ایده را تا نسخه آزمایشی کوچک کنید.","احساس دیگران را داده ببینید.","بدن زیرساخت فکر است.","سیستم بیرونی برای پیگیری بسازید."],
+similar:["INTJ","ENTP","ISTP","INFP"]},
+ENTJ:{code:"ENTJ",nick:"فرمانده",title:"رهبر اجرایی",slogan:"هدف روشن است؛ منابع را منظم می‌کنم تا به آن برسیم.",
+identity:"ENTJ با تفکر برون‌گرا سازمان می‌سازد و با شهود درون‌گرا افق را می‌بیند. تصمیم سریع، زبان مستقیم و انرژی برای پیش بردن جمع از نشانه‌های اوست.",
+fns:[{c:"Te",n:"تفکر برون‌گرا",r:"dominant"},{c:"Ni",n:"شهود درون‌گرا",r:"auxiliary"},{c:"Se",n:"حس برون‌گرا",r:"tertiary"},{c:"Fi",n:"احساس درون‌گرا",r:"inferior"}],
+traits:[{n:"جهت‌دهی",t:"جمع را حول هدف واحد هم‌خط می‌کند."},{n:"قاطعیت",t:"حتی با اطلاعات ناقص تصمیم می‌گیرد."},{n:"استاندارد عملکرد",t:"نتیجه را می‌سنجد نه نیت را."},{n:"چشم‌انداز رشد",t:"سازمان را مقیاس‌پذیر می‌خواهد."},{n:"صراحت",t:"تعارف را اتلاف می‌داند."},{n:"پایداری زیر فشار",t:"بحران را میدان مدیریت می‌بیند."}],
+str:["رهبری و سازمان‌دهی","اجرای استراتژی","شجاعت تصمیم سخت","انگیزه‌دهی","یادگیری کاربردی","مذاکره"],
+weak:["بی‌صبری و لحن دستوری","کم‌توجهی به خستگی تیم","کار بیش از حد","دشواری آسیب‌پذیری","نادیده گرفتن صدای آرام","سخت‌گیری با خطا"],
+romance:{s:"شریک را هم‌تیم زندگی می‌بیند. عاشقانه عمل‌گراست.",as:["حمایت عملی قوی","وفاداری بلندمدت","برنامه‌ریزی آینده","ممکن است رابطه را مثل پروژه مدیریت کند"],need:["شریک مستقل","صداقت","فضای رهبری بدون رقابت دائمی"],ch:["کنترل بیش از حد","اولویت کار","سختی گفتن نیاز"]},
+social:{s:"شبکه‌ساز هدفمند.",w:["دوستی با افراد شایسته","میزبان رویدادهای نتیجه‌دار","کم‌تحمل برای شکایت بدون راه‌حل"],c:["مستقیم وارد موضوع می‌شود","ممکن است در جمع اصلاح کند","بعد از حل سریع سراغ بعد می‌رود"]},
+famous:[{n:"استیو جابز",note:"کارآفرین"},{n:"مارگارت تاچر",note:"سیاستمدار"},{n:"ناپلئون",note:"فرمانده"},{n:"گوردون رمزی",note:"سرآشپز"},{n:"شریل سندبرگ",note:"مدیر اجرایی"}],
+chars:[{n:"تایوین لنیستر",note:"بازی تاج‌وتخت"},{n:"میراندا پریستلی",note:"شیطان پرادا می‌پوشد"}],
+work:{s:"مدیریت، کارآفرینی، حقوق، عملیات.",lead:"چشم‌انداز + ضرب‌الاجل + پاسخگویی.",col:"شتاب‌دهنده پروژه.",emp:"با مسیر رشد می‌ماند."},
+careers:[{t:"مدیرعامل / بنیان‌گذار",f:"مالکیت نتیجه"},{t:"مشاوره مدیریت",f:"تغییر"},{t:"حقوق کسب‌وکار",f:"مذاکره"},{t:"عملیات",f:"بهینه‌سازی"},{t:"سرمایه‌گذاری",f:"ریسک"},{t:"سیاست",f:"سازمان جمع"}],
+job:{drv:["تأثیر","اختیار","رشد مقیاس","تیم شایسته"],kill:["بلاتکلیفی","مدیر ضعیف","کار بدون اهرم"],env:"سریع، شفاف، نتیجه‌محور."},
+dev:{areas:["شنیدن","آسیب‌پذیری","تفویض","استراحت"],prac:["اول فقط سؤال بپرسید","بازخورد خصوصی","یک روز بدون کار","نام بردن ارزش‌های شخصی"]},
+books:[{t:"High Output Management",a:"اندی گروو",w:"رهبری اجرایی"},{t:"Dare to Lead",a:"برنه براون",w:"آسیب‌پذیری در رهبری"}],
+advice:["سرعت دارایی است؛ لحن هزینه پنهان است.","آدم‌ها ماشین نیستند.","پیروزی بدون بازیابی فرسودگی است."],
+similar:["INTJ","ESTJ","ENTP","ENFJ"]},
+ENTP:{code:"ENTP",nick:"مناظره‌گر",title:"مخترع چابک",slogan:"ایده را می‌چرخانم تا زاویه‌ای که کسی ندیده پیدا شود.",
+identity:"ENTP با شهود برون‌گرا امکانات را جرقه می‌زند و با تفکر درون‌گرا می‌آزماید. عاشق بحث و اختراع است. انرژی‌اش در شروع درخشان است.",
+fns:[{c:"Ne",n:"شهود برون‌گرا",r:"dominant"},{c:"Ti",n:"تفکر درون‌گرا",r:"auxiliary"},{c:"Fe",n:"احساس برون‌گرا",r:"tertiary"},{c:"Si",n:"حس درون‌گرا",r:"inferior"}],
+traits:[{n:"تولید ایده",t:"در چند دقیقه ده‌ها مسیر می‌سازد."},{n:"چابکی ذهنی",t:"موضع را برای آزمودن عوض می‌کند."},{n:"شوخ‌طبعی",t:"تناقض را به بینش تبدیل می‌کند."},{n:"مخالفت سازنده",t:"«چرا که نه؟» ابزار کار اوست."},{n:"تحمل ابهام",t:"در فضای تعریف‌نشده راحت است."},{n:"شبکه‌سازی فکری",t:"آدم‌ها و ایده‌ها را وصل می‌کند."}],
+str:["نوآوری","متقاعدسازی","انعطاف در بحران","یادگیری گسترده","شروع پروژه نو","دیدن فرصت"],
+weak:["تمام نکردن","بحث برای بحث","بی‌توجهی به جزئیات","حساسیت به بی‌اعتنایی","پراکندگی تعهد","کم‌طاقتی برای روتین"],
+romance:{s:"رابطه باید بازی فکری و آزادی داشته باشد.",as:["جذاب و محرک رشد","احترام به استقلال","ممکن است از تکرار خسته شود","محبت با ایده و شوخی"],need:["فضای اکتشاف","شریک که بحث را حمله نبیند","لنگر اجرایی"],ch:["فرار از گفتگوی هیجانی","شروع زیاد پیگیری کم","شوخی نابه‌جا"]},
+social:{s:"مرکز جرقه جمع.",w:["دوست همه‌کس در سطح ایده","حلقه نزدیک کوچک‌تر از ظاهر","از آدم‌های جزمی فاصله"],c:["بحث را بازی می‌بیند","سریع موضع عوض می‌کند","موضوع را نیمه‌کاره رها می‌کند"]},
+famous:[{n:"سقراط",note:"فیلسوف"},{n:"توماس ادیسون",note:"مخترع"},{n:"رابرت داونی جونیور",note:"بازیگر"},{n:"مارک تواین",note:"نویسنده"},{n:"ریچارد فاینمن",note:"فیزیکدان"}],
+chars:[{n:"تونی استارک",note:"مرد آهنی"},{n:"جک اسپارو",note:"دزدان دریایی"},{n:"ددپول",note:"مارول"}],
+work:{s:"نوآوری، محصول، کارآفرینی، رسانه.",lead:"الهام می‌دهد؛ به عملیات‌چی نیاز دارد.",col:"طوفان فکری عالی.",emp:"با مسئله تازه می‌درخشد."},
+careers:[{t:"کارآفرینی",f:"شروع ایده"},{t:"طراحی محصول",f:"آزمایش"},{t:"وکالت",f:"استدلال زنده"},{t:"رسانه",f:"روایت"},{t:"مشاوره نوآوری",f:"خراب کردن فرض کهنه"}],
+job:{drv:["تازگی","آزادی","مخاطب باهوش","تأثیر ایده"],kill:["فرم تکراری","مدیر بسته","جزئیات بی‌پایان"],env:"پویا، آزمایش‌گر."},
+dev:{areas:["اتمام","حساسیت هیجانی","جزئیات","تعهد"],prac:["یک پروژه تا پایان","شریک اجرایی","اول همدلی بعد استدلال","عادت بدنی ثابت"]},
+books:[{t:"The Lean Startup",a:"اریک ریس",w:"ایده تا آزمایش"},{t:"Essentialism",a:"گرگ مک‌کیون",w:"انتخاب کمتر"}],
+advice:["جرقه را با تقویم زمین‌گیر کنید.","مخالفت را با همدلی شروع کنید.","به یک حوزه برای عمق متعهد شوید."],
+similar:["INTP","ENFP","ENTJ","ESTP"]},
+INFJ:{code:"INFJ",nick:"حامی",title:"بیننده معنا",slogan:"پشت رفتار آدم‌ها معنا می‌بینم و می‌خواهم جهان کمی انسانی‌تر شود.",
+identity:"INFJ نادرترین تیپ آماری است. شهود درون‌گرا تصویر یکپارچه از آدم‌ها می‌دهد و احساس برون‌گرا آن را به مراقبت تبدیل می‌کند. ظاهر آرام دارد اما درونش آرمان و شدت هیجانی زیاد است.",
+fns:[{c:"Ni",n:"شهود درون‌گرا",r:"dominant"},{c:"Fe",n:"احساس برون‌گرا",r:"auxiliary"},{c:"Ti",n:"تفکر درون‌گرا",r:"tertiary"},{c:"Se",n:"حس برون‌گرا",r:"inferior"}],
+traits:[{n:"بینش انسانی",t:"انگیزه پنهان آدم‌ها را زود می‌خواند."},{n:"یکپارچگی ارزش",t:"ناهمخوانی حرف و عمل آزارش می‌دهد."},{n:"عمق",t:"گفتگوی سطحی را تحمل نمی‌کند."},{n:"مراقبت خاموش",t:"بیش از آنچه می‌گوید حمایت می‌کند."},{n:"کمال آرمانی",t:"خود و جهان را با تصویر بهتر می‌سنجد."},{n:"حریم",t:"لایه‌های درونی را فقط به اندکی نشان می‌دهد."}],
+str:["همدلی عمیق","دیدن مسیر رشد افراد","نوشتن معنا","وفاداری","آرام کردن بحران هیجانی","بینش فرهنگی"],
+weak:["جذب بار هیجانی دیگران","کمال‌گرایی و فرسودگی","سختی نه گفتن","ایده‌آل‌سازی","انزوا وقتی زخمی می‌شود","به تعویق انداختن نیاز خود"],
+romance:{s:"به‌دنبال پیوند روحی است. دیر باز می‌شود اما وقتی اعتماد کند وقف است.",as:["توجه به جزئیات احساسی","وفاداری","نیاز به گفتگوی معنایی","حساسیت به بی‌اعتنایی"],need:["صداقت","فضای تنها بودن","قدردانی از مراقبت خاموش"],ch:["انتظار ذهن‌خوانی","فروخوردن خشم","فداکاری افراطی"]},
+social:{s:"یک یا دو دوست عمیق.",w:["جذب افراد آسیب‌دیده","خستگی از جمع شلوغ","مرزهایی که دیر گذاشته می‌شوند"],c:["از تنش مستقیم پرهیز","بازپخش درونی","قطع کامل اگر ارزش بشکند"]},
+famous:[{n:"مهاتما گاندی",note:"رهبر معنوی"},{n:"مارتین لوتر کینگ",note:"فعال"},{n:"افلاطون",note:"فیلسوف"},{n:"نیکول کیدمن",note:"بازیگر"}],
+chars:[{n:"دامبلدور",note:"هری پاتر"},{n:"گالادریل",note:"ارباب حلقه‌ها"}],
+work:{s:"مشاوره، روان‌شناسی، نوشتن، آموزش معنایی.",lead:"با الهام و ارزش رهبری می‌کند.",col:"آرام و حساس به جو تیم.",emp:"اگر کار با ارزشش بخواند متعهد است."},
+careers:[{t:"روان‌شناسی",f:"عمق انسان"},{t:"نویسندگی",f:"بینش"},{t:"آموزش",f:"هدایت مسیر"},{t:"مددکاری",f:"آرمان عملی"},{t:"منابع انسانی",f:"فرهنگ"},{t:"هنر",f:"نماد و معنا"}],
+job:{drv:["معنا","تأثیر روی افراد","آرامش","همخوانی ارزش"],kill:["سیاست سازمانی","کار بی‌معنا","تضاد ارزش"],env:"آرام، انسانی، با فضای خلوت."},
+dev:{areas:["مرزبندی","بدن و لحظه حال","نه گفتن","کمال‌زدایی"],prac:["تمرین نه کوتاه","ورزش برای حس","نوشتن نیاز خود","محدود کردن جذب داستان سنگین"]},
+books:[{t:"Man's Search for Meaning",a:"ویکتور فرانکل",w:"معنا در رنج"},{t:"Boundaries",a:"کلاود و تاون‌سند",w:"نه گفتن"}],
+advice:["مراقبت از خود پیش‌شرط مراقبت از جهان است.","بینش را با داده بیرونی چک کنید.","خشم فروخورده را زود بگویید."],
+similar:["INFP","INTJ","ENFJ","ISFJ"]},
+INFP:{code:"INFP",nick:"میانجی",title:"نگهبان ارزش‌های درونی",slogan:"اگر با ارزش‌هایم نخواند، حتی موفقیت هم برایم پوچ است.",
+identity:"INFP با احساس درون‌گرا قطب‌نمای اخلاقی بسیار شخصی دارد. شهود برون‌گرا دنیا را پر از امکان و همدلی می‌کند. آرام، وفادار به آرمان و خلاق است.",
+fns:[{c:"Fi",n:"احساس درون‌گرا",r:"dominant"},{c:"Ne",n:"شهود برون‌گرا",r:"auxiliary"},{c:"Si",n:"حس درون‌گرا",r:"tertiary"},{c:"Te",n:"تفکر برون‌گرا",r:"inferior"}],
+traits:[{n:"اصالت",t:"نقاب زدن برایش فرساینده است."},{n:"تخیل",t:"دنیاهای درونی غنی دارد."},{n:"همدلی گزینشی",t:"با رنج فرد مشخص عمیقاً همراه می‌شود."},{n:"انعطاف بیرونی، سختی درونی",t:"ارزش‌ها خط قرمزند."},{n:"زیبایی‌شناسی",t:"فضا و کلمه برایش اهمیت دارد."},{n:"ایده‌آل‌گرایی",t:"واقعیت را با آنچه باید باشد می‌سنجد."}],
+str:["خلاقیت ادبی و هنری","وفاداری","شنیدن بدون قضاوت","دیدن استعداد پنهان","انعطاف در روش","معنابخشی"],
+weak:["تعلل","حساسیت به نقد","فرار از تعارض","گرفتار شدن در احساس","سازمان‌دهی ضعیف","خودانتقادی شدید"],
+romance:{s:"عشق برای میانجی مقدس است. به‌دنبال فهمیده شدن است.",as:["محبت شاعرانه","فضای رشد فردی","وفاداری عمیق","نیاز به اطمینان عاطفی"],need:["اصالت و مهربانی","زمان پردازش احساس","عدم تمسخر رویا"],ch:["ایده‌آل‌سازی شریک","فروخوردن نیاز","کناره‌گیری بعد از زخم"]},
+social:{s:"حلقه کوچک امن.",w:["دوستی انتخابی","جذب داستان زندگی","خستگی از محیط قضاوت‌گر"],c:["اول درون طوفان می‌شود","ممکن است نامه بنویسد","سردی پایدار اگر ارزش بشکند"]},
+famous:[{n:"شکسپیر",note:"نمایشنامه‌نویس"},{n:"تالکین",note:"نویسنده"},{n:"پرنسس دایانا",note:"چهره عمومی"},{n:"جانی دپ",note:"بازیگر"},{n:"ون گوگ",note:"نقاش"}],
+chars:[{n:"فرودو",note:"ارباب حلقه‌ها"},{n:"لونا لاوگود",note:"هری پاتر"},{n:"آملی",note:"آملی"}],
+work:{s:"هنر، نوشتن، مشاوره، آموزش انسانی.",lead:"الهام‌بخش ارزش‌ها.",col:"حمایتگر و خلاق.",emp:"اگر کار با وجدانش بجنگد نمی‌ماند."},
+careers:[{t:"نویسندگی",f:"زبان درونی"},{t:"روان‌شناسی",f:"همدلی"},{t:"هنر",f:"بیان"},{t:"آموزش ادبیات",f:"رشد فرد"},{t:"موسیقی",f:"احساس"},{t:"کار خلاق مستقل",f:"آزادی"}],
+job:{drv:["معنا","آزادی","زیبایی","انسان‌مداری"],kill:["رقابت سمی","دروغ سازمانی","کنترل شدید"],env:"آرام، منعطف، محترمانه."},
+dev:{areas:["ساختار","مهارت تعارض","جدا کردن نقد از هویت","اقدام ناقص"],prac:["بلوک زمانی برای کارهای ناخوشایند","جمله آماده برای نه","پیش‌نویس زود","ورزش ملایم"]},
+books:[{t:"The Artist's Way",a:"جولیا کامرون",w:"مراقبت از خلاقیت"},{t:"Daring Greatly",a:"برنه براون",w:"آسیب‌پذیری"}],
+advice:["ارزش‌ها قطب‌نمایند نه بهانه توقف.","پیش‌نویس زشت بهتر از شاهکار نانوشته است.","تعارض محترمانه رابطه را زنده می‌کند."],
+similar:["INFJ","ENFP","ISFP","INTP"]},
+ENFJ:{code:"ENFJ",nick:"قهرمان",title:"معمار رشد دیگران",slogan:"پتانسیل آدم‌ها را می‌بینم و دوست دارم آن را بیدار کنم.",
+identity:"ENFJ با احساس برون‌گرا جو جمع را می‌خواند و با شهود درون‌گرا مسیر رشد افراد را می‌بیند. گرم، سازمان‌یافته برای هدف انسانی. خطرش فراموش کردن خودش به نفع جمع است.",
+fns:[{c:"Fe",n:"احساس برون‌گرا",r:"dominant"},{c:"Ni",n:"شهود درون‌گرا",r:"auxiliary"},{c:"Se",n:"حس برون‌گرا",r:"tertiary"},{c:"Ti",n:"تفکر درون‌گرا",r:"inferior"}],
+traits:[{n:"خواندن جمع",t:"جو اتاق را سریع حس می‌کند."},{n:"الهام‌بخشی",t:"دیگران را به نسخه بهتر دعوت می‌کند."},{n:"سازمان انسانی",t:"برنامه می‌چیند تا آدم‌ها رشد کنند."},{n:"مسئولیت جمع",t:"بار هماهنگی را برمی‌دارد."},{n:"گرما",t:"توجه شخصی."},{n:"حساسیت به رد شدن",t:"بی‌اعتنایی جمع را عمیق حس می‌کند."}],
+str:["رهبری الهام‌بخش","ارتباط و سخنوری","ساختن فرهنگ تیم","حل تعارض","دیدن استعداد","پیگیری رشد"],
+weak:["فراموشی مرز","کنترل نرم","حساسیت به ناسپاسی","تصمیم احساسی","خستگی نقش ناجی","سختی تنهایی بدون نقش"],
+romance:{s:"شریک را پروژه عشق و رشد می‌بیند. گرم و نیازمند قدردانی.",as:["توجه و برنامه‌ریزی","حمایت از رشد","گفتگوی هیجانی","ممکن است زیاد راهنمایی کند"],need:["قدردانی کلامی","شریک رشدگرا","صداقت"],ch:["رنجش وقتی تلاش دیده نشود","از دست دادن خود","سختی پذیرش فاصله"]},
+social:{s:"مرکز گرم جمع.",w:["دوستی‌های زیاد","میزبان","خستگی پنهان بعد از جمع"],c:["می‌خواهد سریع آشتی کند","ممکن است خود را مقصر بداند","اگر خیانت به جمع ببیند قاطع می‌شود"]},
+famous:[{n:"اپرا وینفری",note:"مجری"},{n:"باراک اوباما",note:"سیاستمدار"},{n:"مایا آنجلو",note:"شاعر"},{n:"جنیفر لارنس",note:"بازیگر"}],
+chars:[{n:"مورفیوس",note:"ماتریکس"},{n:"وندر وومن",note:"دی‌سی"}],
+work:{s:"آموزش، منابع انسانی، مدیریت تیم، روابط عمومی.",lead:"فرهنگ می‌سازد و افراد را رشد می‌دهد.",col:"چسب تیم.",emp:"با مأموریت روشن می‌درخشد."},
+careers:[{t:"مدیریت آموزشی",f:"رشد جمعی"},{t:"منابع انسانی",f:"پتانسیل"},{t:"روابط عمومی",f:"پیام"},{t:"مشاوره سازمانی",f:"فرهنگ"},{t:"سیاست اجتماعی",f:"خدمت"},{t:"کوچینگ",f:"رشد فرد"}],
+job:{drv:["تأثیر روی آدم‌ها","تشکر","مأموریت","همکاری"],kill:["محیط بی‌روح","خیانت به ارزش","انزوای نقش"],env:"تعاملی، معنادار."},
+dev:{areas:["مرز","تحلیل بی‌طرف","استراحت","کمتر نجات دادن"],prac:["بعدازظهر بدون در دسترس بودن","تصمیم با فهرست منطقی","قبل از نصیحت اجازه بخواهید"]},
+books:[{t:"Dare to Lead",a:"برنه براون",w:"رهبری انسانی"},{t:"Nonviolent Communication",a:"روزنبرگ",w:"زبان نیاز"}],
+advice:["شما مسئول حال همه اتاق نیستید.","راهنمایی بدون اجازه کنترل نرم است.","نه گفتن به یک درخواست، بله به کار مهم‌تر است."],
+similar:["INFJ","ESFJ","ENFP","ENTJ"]},
+ENFP:{code:"ENFP",nick:"پیکارگر",title:"جرقه امکانات انسانی",slogan:"در هر آدم و هر ایده دری تازه می‌بینم.",
+identity:"ENFP با شهود برون‌گرا دنیا را پر از امکان می‌بیند و با احساس درون‌گرا آن را به ارزش گره می‌زند. گرم، خلاق و بی‌قرار در قفس.",
+fns:[{c:"Ne",n:"شهود برون‌گرا",r:"dominant"},{c:"Fi",n:"احساس درون‌گرا",r:"auxiliary"},{c:"Te",n:"تفکر برون‌گرا",r:"tertiary"},{c:"Si",n:"حس درون‌گرا",r:"inferior"}],
+traits:[{n:"امکان‌بینی",t:"ارتباط بین حوزه‌های دور می‌سازد."},{n:"گرمای اجتماعی",t:"آدم‌ها در حضورش دیده می‌شوند."},{n:"اصالت هیجانی",t:"نقاب طولانی نمی‌زند."},{n:"شروع درخشان",t:"انرژی اولیه پروژه بالاست."},{n:"ناسازگاری با قفس",t:"قانون بی‌معنا را دور می‌زند."},{n:"همدلی داستانی",t:"زندگی دیگران را مثل رمان می‌فهمد."}],
+str:["خلاقیت","ارتباط گرم","انطباق سریع","دیدن استعداد","انگیزه‌بخشی","معنابخشی به تغییر"],
+weak:["پراکندگی","حساسیت هیجانی","بی‌نظمی عملی","سختی تمرکز طولانی","قول بیش از توان","فرار از کار کسل‌کننده"],
+romance:{s:"عشق باید زنده، صادق و پر از کشف باشد.",as:["ابراز گرم","ماجراجویی","فضای فردیت","نوسان انرژی"],need:["شنیده شدن","آزادی","لنگر آرام"],ch:["ایده‌آل‌سازی و افت","فرار از روزمره","قول هیجانی بیش از توان"]},
+social:{s:"آشنای بسیار؛ انرژی جمع را بالا می‌برد.",w:["وصل کردن آدم‌ها","قصه‌گو","نیاز به بازیابی تنها"],c:["اول هیجانی","ممکن است زود کوتاه بیاید یا قطع کند","از سردی منطقی می‌رنجد"]},
+famous:[{n:"رابین ویلیامز",note:"بازیگر"},{n:"کوئنتین تارانتینو",note:"کارگردان"},{n:"والت دیزنی",note:"خلاق"},{n:"الن دجنرس",note:"مجری"}],
+chars:[{n:"پیتر پن",note:"جیمز بری"},{n:"آن شرلی",note:"آن در گرین گیبلز"}],
+work:{s:"خلاقیت، ارتباطات، کارآفرینی معنایی، آموزش نو.",lead:"الهام می‌دهد.",col:"روح تیم.",emp:"با آزادی و معنا می‌درخشد."},
+careers:[{t:"تبلیغات و برند",f:"ایده و احساس"},{t:"کوچینگ",f:"پتانسیل"},{t:"آموزش نوآور",f:"کنجکاوی"},{t:"روزنامه‌نگاری",f:"داستان"},{t:"کارآفرینی اجتماعی",f:"ارزش"},{t:"روابط عمومی",f:"شبکه"}],
+job:{drv:["تنوع","آدم‌ها","معنا","آزادی"],kill:["روتین خشک","مدیر بسته","بی‌معنایی"],env:"پویا، انسانی."},
+dev:{areas:["تمرکز","پیگیری","مرز انرژی","عادت بدنی"],prac:["یک پروژه تا تحویل","همکار ساختارمند","تقویم خواب","نوشتن ارزش‌ها برای تصمیم"]},
+books:[{t:"Big Magic",a:"الیزابت گیلبرت",w:"خلاقیت"},{t:"Atomic Habits",a:"جیمز کلییر",w:"زمین‌گیر کردن جرقه"}],
+advice:["هر ایده جدید مالیات ایده قبلی است.","آزادی پایدار از نظم حداقلی می‌آید.","نه گفتن از شما کم‌مهربان نمی‌سازد."],
+similar:["INFP","ENTP","ENFJ","ESFP"]},
+ISTJ:{code:"ISTJ",nick:"بازرس",title:"نگهبان نظم و تعهد",slogan:"قولی که داده‌ام را دقیق، به‌موقع و بدون نمایش انجام می‌دهم.",
+identity:"ISTJ با حس درون‌گرا مخزن تجربه و رویه است و با تفکر برون‌گرا آن را به نظم قابل اتکا تبدیل می‌کند. ساکت، مسئولیت‌پذیر و دقیق.",
+fns:[{c:"Si",n:"حس درون‌گرا",r:"dominant"},{c:"Te",n:"تفکر برون‌گرا",r:"auxiliary"},{c:"Fi",n:"احساس درون‌گرا",r:"tertiary"},{c:"Ne",n:"شهود برون‌گرا",r:"inferior"}],
+traits:[{n:"تعهد",t:"مسئولیت را تا ته می‌برد."},{n:"دقت",t:"جزئیات عملی از چشم‌اش دور نمی‌ماند."},{n:"ثبات",t:"در بحران قابل پیش‌بینی می‌ماند."},{n:"واقع‌گرایی",t:"با آنچه هست کار می‌کند."},{n:"احترام به قاعده",t:"قانون را چسب اجتماع می‌داند."},{n:"حافظه رویه‌ای",t:"آنچه درست کار کرده ذخیره می‌شود."}],
+str:["قابلیت اتکا","سازمان‌دهی","پایبندی به کیفیت","تصمیم مبتنی بر واقعیت","استقامت","حفظ دانش سازمانی"],
+weak:["مقاومت در برابر تغییر","سختی بیان احساس","قضاوت تند درباره بی‌نظمی","انعطاف کم","کار بیش از حد","نادیده گرفتن ایده نو"],
+romance:{s:"عشق را با ثبات و عمل نشان می‌دهد.",as:["وفاداری","روتین امن","کمک ملموس","دیر گرم شدن"],need:["احترام به نظم","قدردانی از زحمت","اطلاع قبلی برای تغییر بزرگ"],ch:["سردی ظاهری","سختی عذرخواهی","پافشاری بر روش خود"]},
+social:{s:"دوستی‌های قدیمی مبتنی بر اعتماد.",w:["قول کم عمل زیاد","شوخی خشک","ناراحتی از تأخیر"],c:["با واقعیت بحث می‌کند","سکوت و کار را ترجیح می‌دهد","اگر قاعده بشکند قاطع می‌شود"]},
+famous:[{n:"جورج واشنگتن",note:"سیاستمدار"},{n:"آنگلا مرکل",note:"صدراعظم"},{n:"وارن بافت",note:"سرمایه‌گذار"},{n:"ملکه الیزابت دوم",note:"وظیفه"}],
+chars:[{n:"ند استارک",note:"بازی تاج‌وتخت"},{n:"کاپیتان آمریکا",note:"مارول"}],
+work:{s:"حسابرسی، عملیات، حقوق، لجستیک، مالی.",lead:"شفاف، منظم، عادل بر اساس قاعده.",col:"ستون تحویل.",emp:"با نقش روشن عالی است."},
+careers:[{t:"حسابرسی",f:"دقت"},{t:"حقوق",f:"رویه"},{t:"عملیات",f:"پایداری"},{t:"کنترل کیفیت",f:"استاندارد"},{t:"نظامی",f:"وظیفه"},{t:"مدیریت پروژه",f:"موعد"}],
+job:{drv:["شفافیت نقش","عدالت رویه‌ای","کیفیت","ثبات"],kill:["هرج‌ومرج","مدیر دمدمی","تغییر بی‌دلیل"],env:"ساختارمند، آرام."},
+dev:{areas:["انعطاف","ابراز هیجان","آزمایش ایده نو","واگذاری"],prac:["یک تغییر کوچک در ماه","جمله قدردانی روزانه","گوش دادن قبل از رد ایده","مرخصی واقعی"]},
+books:[{t:"The Checklist Manifesto",a:"آتول گوانده",w:"نظم"},{t:"Who Moved My Cheese",a:"اسپنسر جانسون",w:"تغییر"}],
+advice:["روش شما ارزشمند است؛ تنها روش جهان نیست.","محبت ناگفته برای طرف مقابل وجود ندارد.","استراحت بخشی از مسئولیت است."],
+similar:["ESTJ","ISFJ","INTJ","ISTP"]},
+ISFJ:{code:"ISFJ",nick:"مدافع",title:"مراقب وفادار",slogan:"آسایش آدم‌هایم را بی‌سروصدا، دقیق و پیوسته می‌سازم.",
+identity:"ISFJ با حس درون‌گرا جزئیات زندگی دیگران را به خاطر می‌سپارد و با احساس برون‌گرا به مراقبت عملی تبدیل می‌کند. گرمِ آرام: کم‌حرف درباره خود، پرکار برای دیگران.",
+fns:[{c:"Si",n:"حس درون‌گرا",r:"dominant"},{c:"Fe",n:"احساس برون‌گرا",r:"auxiliary"},{c:"Ti",n:"تفکر درون‌گرا",r:"tertiary"},{c:"Ne",n:"شهود برون‌گرا",r:"inferior"}],
+traits:[{n:"مراقبت جزئی‌نگر",t:"ترجیح و تاریخ مهم را به یاد دارد."},{n:"فروتنی",t:"کارش را نمایش نمی‌دهد."},{n:"وفاداری",t:"به افراد و نهادها متعهد می‌ماند."},{n:"حساسیت به جو",t:"ناهماهنگی جمع را زود حس می‌کند."},{n:"عمل‌گرایی مهربان",t:"به‌جای شعار، کمک می‌آورد."},{n:"حافظه تجربی",t:"درس گذشته را برای محافظت به کار می‌برد."}],
+str:["پشتیبانی پایدار","دقت خدماتی","همدلی عملی","حفظ دانش تیم","قابل اعتماد در بحران","صبر"],
+weak:["سختی نه گفتن","رنجش فروخورده","مقاومت در برابر روش تازه","کم‌دیده شدن","اجتناب از تعارض","نگرانی مزمن"],
+romance:{s:"شریک را با خدمت و توجه به جزئیات دوست دارد.",as:["مراقبت روزمره","خانه‌سازی امن","یادآوری مناسبت‌ها","فداکاری که اگر دیده نشود می‌رنجد"],need:["تشکر مشخص","ثبات هیجانی","احترام به خستگی"],ch:["انتظار ذهن‌خوانی","تحمل تا نقطه شکست","ترس از بیان نارضایتی"]},
+social:{s:"دوست وفادار، میزبان آرام.",w:["حضور در سختی","کم‌حرفی درباره رنج خود","ناراحتی از بی‌ادبی"],c:["از درگیری پرهیز","گریه یا سکوت","بازپخش بعدی"]},
+famous:[{n:"مادر ترزا",note:"خدمت"},{n:"کیت میدلتون",note:"چهره عمومی"},{n:"بیانسه",note:"هنرمند"},{n:"وین دیزل",note:"بازیگر"}],
+chars:[{n:"سام گمجی",note:"ارباب حلقه‌ها"},{n:"دکتر واتسون",note:"شرلوک"},{n:"مولی ویزلی",note:"هری پاتر"}],
+work:{s:"مراقبت سلامت، آموزش، پشتیبانی اداری، منابع انسانی.",lead:"مراقب تیم، کم‌ادعا.",col:"کمک‌رسان همیشگی.",emp:"با محیط محترمانه می‌درخشد."},
+careers:[{t:"پرستاری",f:"خدمت دقیق"},{t:"آموزش کودکان",f:"ثبات و مهر"},{t:"اداره",f:"جزئیات"},{t:"کتابداری",f:"نظم"},{t:"کار اجتماعی",f:"حمایت"},{t:"مهمان‌نوازی",f:"آسایش"}],
+job:{drv:["قدردانی","کمک ملموس","ثبات","همکاران مهربان"],kill:["ناسپاسی","هرج‌ومرج","تعارض علنی"],env:"آرام، محترمانه."},
+dev:{areas:["نه گفتن","ابراز نیاز","پذیرش تغییر","مراقبت از خود"],prac:["یک درخواست در هفته را رد کنید","نیاز را با من بگویید","کمک بخواهید قبل از خستگی","سرگرمی فقط برای خود"]},
+books:[{t:"Boundaries",a:"کلاود",w:"مهربانی با خط"},{t:"Burnout",a:"ناگلوسکی",w:"فرسودگی مراقبت‌گر"}],
+advice:["خدمت بدون مرز دیر یا زود به رنجش تبدیل می‌شود.","نیاز شما هم داده معتبر است.","نه محترمانه بی‌مهری نیست."],
+similar:["ESFJ","ISTJ","INFJ","ISFP"]},
+ESTJ:{code:"ESTJ",nick:"مجری",title:"مدیر نظم جمعی",slogan:"کار باید درست، روشن و به‌موقع انجام شود؛ من مسئول رسیدن به آنم.",
+identity:"ESTJ با تفکر برون‌گرا محیط را سازمان می‌دهد و با حس درون‌گرا به تجربه متکی است. مستقیم، عمل‌گرا و وظیفه‌محور. در بحران فرمان را می‌گیرد.",
+fns:[{c:"Te",n:"تفکر برون‌گرا",r:"dominant"},{c:"Si",n:"حس درون‌گرا",r:"auxiliary"},{c:"Ne",n:"شهود برون‌گرا",r:"tertiary"},{c:"Fi",n:"احساس درون‌گرا",r:"inferior"}],
+traits:[{n:"سازمان‌دهی",t:"نقش و موعد را روشن می‌کند."},{n:"صراحت",t:"حرف را صاف می‌زند."},{n:"عمل",t:"جلسه بدون تصمیم اتلاف است."},{n:"وفاداری به نهاد",t:"خانواده و تیم را جدی می‌گیرد."},{n:"استاندارد",t:"کیفیت قابل اندازه‌گیری می‌خواهد."},{n:"انرژی اجرایی",t:"جمع را برای انجام کار بسیج می‌کند."}],
+str:["مدیریت پروژه","تصمیم سریع","حفظ استاندارد","شجاعت مسئولیت","ارتباط روشن","پایداری در فشار"],
+weak:["لحن دستوری","بی‌صبری با سبک‌های دیگر","سختی با ابهام خلاق","غفلت از احساس","انعطاف کم","کار بیش از حد"],
+romance:{s:"شریک را با تأمین و وفاداری دوست دارد.",as:["قابل اتکا","برنامه‌ریز زندگی","مستقیم در خواسته","ممکن است کنترل‌گر به نظر برسد"],need:["احترام","همکاری عملی","شریک مسئولیت‌پذیر"],ch:["نقد بیش از حد در خانه","سختی آسیب‌پذیری","اولویت کار"]},
+social:{s:"شبکه عملی.",w:["دوست درست در سختی","شوخی رک","کم‌تحمل برای بهانه"],c:["رودررو و سریع","ممکن است در جمع اصلاح کند","بعد از حل پرونده را می‌بندد"]},
+famous:[{n:"جاج جودی",note:"قاضی"},{n:"جان راکفلر",note:"صنعتگر"},{n:"سونیا سوتومایور",note:"قاضی"},{n:"هری ترومن",note:"رئیس‌جمهور"}],
+chars:[{n:"مونیکا گلر",note:"فرندز"},{n:"اوولی مک‌گونال",note:"هری پاتر"}],
+work:{s:"مدیریت، عملیات، نظامی، حقوق، تولید.",lead:"روشن، نتیجه‌محور.",col:"شتاب و استاندارد.",emp:"اگر سلسله شایسته باشد وفادار است."},
+careers:[{t:"مدیریت عملیات",f:"اجرا"},{t:"حقوق",f:"قاعده"},{t:"مدیریت پروژه",f:"موعد"},{t:"نظامی",f:"نظم"},{t:"تولید",f:"استاندارد"},{t:"مالیه شرکتی",f:"کنترل"}],
+job:{drv:["نتیجه روشن","اختیار","عدالت عملکردی","تیم منضبط"],kill:["ابهام مزمن","بی‌کفایتی مدیریت","کار نمایشی"],env:"ساختارمند، سریع."},
+dev:{areas:["گوش دادن","انعطاف","هیجان خود","تفویض روش"],prac:["در جلسه اول بازخورد ندهید","نقد خصوصی","سرگرمی غیررقابتی","نام بردن احساس"]},
+books:[{t:"The Effective Executive",a:"پیتر دراکر",w:"اثرگذاری مدیر"},{t:"Radical Candor",a:"کیم اسکات",w:"صراحت با مراقبت"}],
+advice:["درست بودن کافی نیست؛ شنیده شدن هم لازم است.","آدم‌ها با شأن بهتر اجرا می‌کنند.","خانه‌تان جلسه عملیات نیست."],
+similar:["ISTJ","ENTJ","ESFJ","ESTP"]},
+ESFJ:{code:"ESFJ",nick:"سفیر",title:"نگهبان همبستگی",slogan:"حالم وقتی خوب است که حال جمع خوب باشد و کسی از قلم نیفتد.",
+identity:"ESFJ با احساس برون‌گرا نبض رابطه را می‌گیرد و با حس درون‌گرا سنت و نیازهای عملی را به خاطر می‌سپارد. اجتماعی، گرم و سازمان‌دهنده مراقبت.",
+fns:[{c:"Fe",n:"احساس برون‌گرا",r:"dominant"},{c:"Si",n:"حس درون‌گرا",r:"auxiliary"},{c:"Ne",n:"شهود برون‌گرا",r:"tertiary"},{c:"Ti",n:"تفکر درون‌گرا",r:"inferior"}],
+traits:[{n:"اجتماعی مسئولانه",t:"جمع را دور هم نگه می‌دارد."},{n:"توجه به آداب",t:"شأن افراد مهم است."},{n:"حافظه شخصی",t:"تولد و سلیقه را فراموش نمی‌کند."},{n:"خدمت فعال",t:"دست به کار می‌شود."},{n:"نیاز به هماهنگی",t:"تنش حل‌نشده آزارش می‌دهد."},{n:"حساسیت به نظر جمع",t:"تصویر اجتماعی‌اش را جدی می‌گیرد."}],
+str:["هماهنگی تیم","مهمان‌نوازی","پیگیری رفاه","اجرای رویداد","وفاداری","انگیزه خدمت"],
+weak:["وابستگی به تأیید","سختی با انتقاد","دخالت خیرخواهانه","غفلت از منطق سرد","فرسودگی خدمت","قضاوت درباره کسانی که رسم را رعایت نمی‌کنند"],
+romance:{s:"رابطه را با توجه و حضور می‌سازد.",as:["گرم و برنامه‌ریز","مراقب جزئیات","نیازمند تعریف","ممکن است نگران نظر دیگران باشد"],need:["قدردانی آشکار","ثبات تعهد","مشارکت در امور خانه"],ch:["رنجش از بی‌توجهی","کنترل نرم برنامه","سختی تنها ماندن بدون نقش"]},
+social:{s:"قلب شبکه.",w:["دوست مناسبت‌ها","ناراحت از بی‌پاسخی","حامی در بیماری و عزا"],c:["می‌خواهد سریع ترمیم کند","ممکن است گله با واسطه بگوید","اگر حرمت بشکند قاطع می‌شود"]},
+famous:[{n:"تیلور سویفت",note:"هنرمند"},{n:"هیو جکمن",note:"بازیگر"},{n:"جنیفر لوپز",note:"هنرمند"},{n:"آنه هاتاوی",note:"بازیگر"}],
+chars:[{n:"هگرید",note:"هری پاتر"},{n:"لسلی ناپ",note:"Parks and Recreation"}],
+work:{s:"منابع انسانی، روابط مشتری، آموزش، بهداشت، رویداد.",lead:"مراقب روحیه تیم.",col:"چسب اجتماعی دفتر.",emp:"با فرهنگ محترمانه عالی است."},
+careers:[{t:"منابع انسانی",f:"آداب سازمان"},{t:"روابط مشتری",f:"خدمت"},{t:"آموزش",f:"رشد با مهر"},{t:"پرستاری",f:"رفاه"},{t:"مدیریت رویداد",f:"جمع"},{t:"فروش مشاوره‌ای",f:"اعتماد"}],
+job:{drv:["تأیید","کمک به افراد","هماهنگی","سنت تیم"],kill:["بی‌ادبی","انزوا","نقد بی‌مقدمه"],env:"اجتماعی، محترمانه."},
+dev:{areas:["استقلال از تأیید","تحلیل بی‌طرف","مرز","تحمل تفاوت سبک"],prac:["یک تصمیم فقط با منطق","قبل از نصیحت بپرسید","زمان تنها بدون تلفن","بازخورد را داده بهبود ببینید"]},
+books:[{t:"How to Win Friends",a:"دیل کارنگی",w:"مهارت اجتماعی"},{t:"The Disease to Please",a:"هریت برایکر",w:"رهایی از تأییدطلبی"}],
+advice:["حال جمع مهم است؛ حال شما هم بخشی از همان جمع است.","نه گفتن رابطه را نمی‌کشد.","همه لازم نیست راضی باشند."],
+similar:["ISFJ","ENFJ","ESTJ","ESFP"]},
+ISTP:{code:"ISTP",nick:"استادکار",title:"تحلیلگر عمل",slogan:"می‌خواهم بفهمم چیزها چطور کار می‌کنند و بعد با دست خودم درست‌شان کنم.",
+identity:"ISTP با تفکر درون‌گرا سازوکار را می‌شکافد و با حس برون‌گرا در لحظه با ابزار درگیر می‌شود. کم‌حرف، مستقل، آرام در بحران.",
+fns:[{c:"Ti",n:"تفکر درون‌گرا",r:"dominant"},{c:"Se",n:"حس برون‌گرا",r:"auxiliary"},{c:"Ni",n:"شهود درون‌گرا",r:"tertiary"},{c:"Fe",n:"احساس برون‌گرا",r:"inferior"}],
+traits:[{n:"مهارت فنی",t:"یادگیری از طریق باز کردن و ساختن."},{n:"آرامش در بحران",t:"وقتی دیگران می‌ترسند او عمل می‌کند."},{n:"اقتصاد کلام",t:"حرف اضافه نمی‌زند."},{n:"استقلال",t:"از مدیریت ذره‌بینی بیزار است."},{n:"انعطاف لحظه‌ای",t:"مسیر را با داده تازه عوض می‌کند."},{n:"ریسک حساب‌شده",t:"حد خود را با تجربه می‌سنجد."}],
+str:["حل مسئله عملی","خونسردی","یادگیری ابزاری","انطباق در میدان","صداقت بی‌حاشیه","خودکفایی"],
+weak:["تعهد بلندمدت دشوار","بیان احساس ضعیف","ملال از نظریه بدون کاربرد","ناپدید شدن در فشار هیجانی","بی‌توجهی به برنامه دیگران","خطرپذیری گاه بیش از حد"],
+romance:{s:"نزدیکی را با بودن کنار و کمک عملی نشان می‌دهد.",as:["وفادار اگر آزاد بماند","کمک تعمیر","ماجراجویی آرام","دیر از احساس حرف می‌زند"],need:["فضای تنها","شریک غیرکنترل‌گر","فعالیت مشترک"],ch:["فرار در تعارض هیجانی","فراموشی مناسبت‌ها","سختی آینده‌نگری"]},
+social:{s:"دوستِ کار و ماجرا.",w:["حضور آرام و مفید","شوخی خشک","ناپدید شدن دوره‌ای"],c:["کنار می‌کشد یا منطق سرد","از نمایش هیجانی خسته می‌شود","اگر آزادی تهدید شود قطع می‌کند"]},
+famous:[{n:"کلینت ایستوود",note:"بازیگر"},{n:"بروس لی",note:"رزمی"},{n:"مایکل جردن",note:"ورزشکار"},{n:"آمِلیا ارهارت",note:"خلبان"}],
+chars:[{n:"هان سولو",note:"جنگ ستارگان"},{n:"وولورین",note:"مارول"},{n:"جان ویک",note:"سینما"}],
+work:{s:"مهندسی میدان، مکانیک، اورژانس، خلبانی، امنیت.",lead:"با الگو و مهارت رهبری می‌کند.",col:"در بحران طلایی.",emp:"با استقلال و مسئله فنی می‌ماند."},
+careers:[{t:"مهندسی مکانیک",f:"سازوکار"},{t:"خلبانی",f:"مهارت لحظه‌ای"},{t:"اورژانس",f:"خونسردی"},{t:"امنیت فنی",f:"تشخیص"},{t:"ورزش",f:"بدن و دقت"},{t:"برنامه‌نویسی سیستم",f:"منطق ملموس"}],
+job:{drv:["آزادی","مسئله ملموس","ابزار خوب","کم‌حرفی اداری"],kill:["بوروکراسی","نشست بی‌پایان","مدیریت ذره‌بینی"],env:"عملی، منعطف."},
+dev:{areas:["بیان احساس","برنامه بلندمدت","تعهد اجتماعی","توضیح برای غیر فنی"],prac:["گفتگوی احساسی کوتاه هفتگی","تقویم برای تعهدها","نوشتن چرا این را ساختم","ریسک با ناظر ایمنی"]},
+books:[{t:"Zen and the Art of Motorcycle Maintenance",a:"پیرسیگ",w:"کیفیت و دست"},{t:"Deep Survival",a:"گونزالس",w:"خونسردی"}],
+advice:["آزادی پایدار با چند تعهد انتخاب‌شده می‌ماند.","سکوت شما برای دیگران مبهم است.","احساس دیگران خرابی منطقی نیست."],
+similar:["ESTP","INTP","ISFP","ISTJ"]},
+ISFP:{code:"ISFP",nick:"ماجراجو",title:"هنرمند لحظه",slogan:"زیبایی، اصالت و آزادی حس را فدای نقشه‌های دیگران نمی‌کنم.",
+identity:"ISFP با احساس درون‌گرا ارزش‌های زیبایی‌شناسانه دارد و با حس برون‌گرا آن‌ها را در رنگ و حرکت زنده می‌کند. آرام، مهربان، حساس به محیط.",
+fns:[{c:"Fi",n:"احساس درون‌گرا",r:"dominant"},{c:"Se",n:"حس برون‌گرا",r:"auxiliary"},{c:"Ni",n:"شهود درون‌گرا",r:"tertiary"},{c:"Te",n:"تفکر برون‌گرا",r:"inferior"}],
+traits:[{n:"حس زیبایی",t:"فضا، صدا و بافت زبان اوست."},{n:"اصالت آرام",t:"نقاب طولانی نمی‌زند."},{n:"حضور در لحظه",t:"اینجا و اکنون را غنی زندگی می‌کند."},{n:"مهربانی غیرنمایشی",t:"کمک می‌کند بی‌آنکه اعلام کند."},{n:"نیاز به آزادی",t:"برنامه سفت حالش را می‌گیرد."},{n:"حساسیت حسی",t:"محیط شلوغ زود خسته‌اش می‌کند."}],
+str:["خلاقیت تجسمی","همدلی آرام","انطباق","ذائقه زیبایی","وفاداری به ارزش","آرام کردن فضا"],
+weak:["اجتناب از تعارض و برنامه","سختی توضیح منطقی","حساسیت به نقد هنر","بی‌ثباتی اگر معنا نبینند","فروخوردن خشم","به تعویق انداختن کار خشک"],
+romance:{s:"عشق را با حضور و تجربه مشترک نشان می‌دهد.",as:["مهربان و حسی","هدیه معنادار","نیاز به فضای شخصی","رنجش از کنترل"],need:["پذیرش بدون تعمیر","تجربه مشترک","آرامش در خانه"],ch:["حرف نزدن تا دیر شود","فرار به تنهایی","ایده‌آل زیبایی"]},
+social:{s:"دوست treue در حلقه کوچک.",w:["حضور آرام","از بحث نظری خسته می‌شود","به بی‌عدالتی واکنش درونی تند دارد"],c:["کنار می‌کشد","با هنر یا سکوت پاسخ می‌دهد","اگر ارزش بشکند ناگهان قطع می‌کند"]},
+famous:[{n:"مایکل جکسون",note:"هنرمند"},{n:"فریدا کالو",note:"نقاش"},{n:"باب دیلن",note:"ترانه‌سرا"},{n:"آدری هپبورن",note:"بازیگر"}],
+chars:[{n:"بل",note:"دیو و دلبر"},{n:"ادوارد اسکیسورهندز",note:"برتون"}],
+work:{s:"هنر، طراحی، عکاسی، آشپزی، فیزیوتراپی، محیط‌زیست.",lead:"با مثال و فضا رهبری می‌کند.",col:"آرام و باذوق.",emp:"اگر محیط زیبا و آزاد باشد متعهد است."},
+careers:[{t:"طراحی و هنر",f:"زیبایی"},{t:"موسیقی",f:"بیان حسی"},{t:"عکاسی",f:"لحظه"},{t:"آشپزی",f:"دست و حس"},{t:"درمان جسمی",f:"بدن"},{t:"محیط‌زیست",f:"مراقبت زنده"}],
+job:{drv:["زیبایی","آزادی","ارزش شخصی","محیط حسی مطبوع"],kill:["کنترل شدید","محیط زشت","تعارض علنی"],env:"آرام، زیبا، منعطف."},
+dev:{areas:["ساختار ملایم","گفتگوی تعارض","برنامه مالی","توضیح تصمیم"],prac:["تقویم نرم","جمله آماده برای نه","شریک اجرایی برای پول","نقد کار را از نقد خود جدا کنید"]},
+books:[{t:"The Artist's Way",a:"جولیا کامرون",w:"کانال خلاق"},{t:"Big Magic",a:"گیلبرت",w:"شجاعت ساختن"}],
+advice:["آزادی با کمی ساختار بهتر حفظ می‌شود.","سکوت طولانی شریک را گیج می‌کند.","زیبایی زندگی شامل حساب و موعد هم می‌شود."],
+similar:["INFP","ESFP","ISTP","ISFJ"]},
+ESTP:{code:"ESTP",nick:"کارآفرین",title:"بازیکن میدان",slogan:"فرصت همین حالا است؛ تحلیل بی‌پایان را برای بعد می‌گذارم.",
+identity:"ESTP با حس برون‌گرا محیط را سریع می‌خواند و با تفکر درون‌گرا تاکتیک می‌چیند. اجتماعی، جسور، بذله‌گو و عمل‌گرا. در بحران می‌درخشد.",
+fns:[{c:"Se",n:"حس برون‌گرا",r:"dominant"},{c:"Ti",n:"تفکر درون‌گرا",r:"auxiliary"},{c:"Fe",n:"احساس برون‌گرا",r:"tertiary"},{c:"Ni",n:"شهود درون‌گرا",r:"inferior"}],
+traits:[{n:"سرعت عمل",t:"از داده زنده تصمیم می‌گیرد."},{n:"خواندن موقعیت",t:"زبان بدن و فرصت را می‌بیند."},{n:"جذابیت اجتماعی",t:"جمع را با شوخی گرم می‌کند."},{n:"تحمل فشار",t:"آدرنالین را سوخت می‌داند."},{n:"عمل‌گرایی",t:"نتیجه ملموس می‌خواهد."},{n:"انعطاف تاکتیکی",t:"قواعد را اگر لازم باشد دور می‌زند."}],
+str:["مذاکره و فروش","بحران‌مدیریتی","شبکه‌سازی","شروع سریع","جسارت","حل مسئله در میدان"],
+weak:["بی‌صبری با برنامه بلند","ریسک بیش از حد","کم‌توجهی به پیامد هیجانی","ملال از جزئیات اداری","حرف نسنجیده","تعهد دیرپا دشوار"],
+romance:{s:"رابطه باید زنده و بدون خفگی باشد.",as:["جذاب و بازیگوش","محافظ در بحران","کم‌حرف در عمق هیجانی","نیاز به فضا و تنوع"],need:["آزادی حرکت","شریک منعطف","کمتر حساب‌کشی"],ch:["فرار از گفتگوی سنگین","تکانشگری","نادیده گرفتن آینده"]},
+social:{s:"مرکز ماجرا.",w:["شبکه وسیع عملی","شوخی و چالش","خستگی از آدم‌های جزمی"],c:["رودررو و سریع","با شوخی تنش را می‌شکند یا آتش می‌زند","بعد از دعوا زود رها می‌کند"]},
+famous:[{n:"ارnest همینگوی",note:"نویسنده"},{n:"مادونا",note:"هنرمند"},{n:"ادی مورفی",note:"کمدین"},{n:"جک نیکلسون",note:"بازیگر"}],
+chars:[{n:"جیمز باند",note:"سینما"},{n:"مَوِریک",note:"Top Gun"}],
+work:{s:"فروش، کارآفرینی، عملیات بحران، ورزش، معامله، رسانه زنده.",lead:"در میدان الهام می‌دهد.",col:"موتور حرکت.",emp:"با هدف کوتاه و پاداش روشن می‌درخشد."},
+careers:[{t:"فروش",f:"خواندن آدم"},{t:"کارآفرینی",f:"شروع"},{t:"معامله",f:"تصمیم لحظه‌ای"},{t:"ورزش حرفه‌ای",f:"رقابت"},{t:"اورژانس",f:"بحران"},{t:"رسانه زنده",f:"بداهه"}],
+job:{drv:["سرعت","پاداش ملموس","آزادی","رقابت"],kill:["صف و فرم","نظریه بی‌عمل","کنترل شدید"],env:"پویا، اجتماعی."},
+dev:{areas:["آینده‌نگری","پیگیری","حساسیت هیجانی","تکانش"],prac:["قبل از ریسک بزرگ خواب یک شب","شریک برنامه‌ریز","در تعارض اول تکرار احساس","ورزش منظم به‌جای ریسک مخرب"]},
+books:[{t:"Thinking in Bets",a:"آنی دویک",w:"ریسک هوشمند"},{t:"Never Split the Difference",a:"کریس واس",w:"مذاکره"}],
+advice:["سرعت دارایی است؛ ترمز انتخابی هم هست.","پیامد هیجانی بخشی از معامله است.","آینده شما هم یک موقعیت زنده است."],
+similar:["ISTP","ESFP","ENTP","ESTJ"]},
+ESFP:{code:"ESFP",nick:"سرگرم‌کننده",title:"حضور زنده",slogan:"زندگی همین لحظه است؛ باید دید، حس کرد و با دیگران شریک شد.",
+identity:"ESFP با حس برون‌گرا جهان را پررنگ زندگی می‌کند و با احساس درون‌گرا به گرما و اصالت گره می‌زند. اجتماعی، حسی، مهربان و گریزان از کسالت.",
+fns:[{c:"Se",n:"حس برون‌گرا",r:"dominant"},{c:"Fi",n:"احساس درون‌گرا",r:"auxiliary"},{c:"Te",n:"تفکر برون‌گرا",r:"tertiary"},{c:"Ni",n:"شهود درون‌گرا",r:"inferior"}],
+traits:[{n:"حضور صحنه‌ای",t:"توجه را طبیعی جلب می‌کند."},{n:"گرمای حسی",t:"لمس، خنده، موسیقی زبان اوست."},{n:"همدلی فوری",t:"حال طرف را در لحظه می‌گیرد."},{n:"انطباق اجتماعی",t:"با جمع‌های گوناگون راه می‌آید."},{n:"سبک",t:"زیبایی و بیان شخصی جدی است."},{n:"ملال از آینده دور",t:"برنامه خشک انرژی‌اش را می‌گیرد."}],
+str:["ارتباط گرم","اجرا و ارائه","بالا بردن روحیه","انطباق سریع","ذائقه زیبایی","حمایت عملی در لحظه"],
+weak:["اجتناب از تعارض و برنامه","حساسیت به طرد","تکانشگری خرج و وقت","سختی کار تکراری تنها","گرفتن نقد به عنوان حمله","فرار از آینده ناراحت‌کننده"],
+romance:{s:"عشق باید زنده و ابرازشده باشد.",as:["ابراز گرم","سورپرایز","وفاداری اگر دیده شود","رنجش سریع از بی‌توجهی"],need:["قدردانی و حضور","تنوع","کمتر موعظه درباره آینده"],ch:["فرار از گفتگوی سنگین","ترس طرد","بی‌برنامگی"]},
+social:{s:"مرکز جمع.",w:["دوست آسان‌گیر","حامی در غم با حضور","از قضاوت اخلاقی خشک بیزار"],c:["اول احساسی","ممکن است صحنه را ترک کند","آشتی را با گرما می‌خواهد"]},
+famous:[{n:"مریلین مونرو",note:"بازیگر"},{n:"الویس",note:"موسیقیدان"},{n:"ادِل",note:"خواننده"},{n:"جیمی فاکس",note:"هنرمند"}],
+chars:[{n:"دوری",note:"در جستجوی نمو"},{n:"هارلی کویین",note:"دی‌سی"}],
+work:{s:"اجرا، میزبانی، فروش تجربی، آموزش کودکان، زیبایی، رویداد.",lead:"روحیه می‌سازد.",col:"شادی دفتر.",emp:"با آدم و بازخورد مثبت عالی است."},
+careers:[{t:"هنرهای نمایشی",f:"حضور زنده"},{t:"میزبانی",f:"تجربه مهمان"},{t:"فروش تجربی",f:"ارتباط حسی"},{t:"آموزش ابتدایی",f:"انرژی"},{t:"زیبایی",f:"ذائقه"},{t:"رویداد",f:"لحظه"}],
+job:{drv:["آدم‌ها","تنوع","زیبایی","بازخورد فوری"],kill:["تنهایی طولانی","نقد سرد","روتین بی‌روح"],env:"اجتماعی، زیبا، منعطف."},
+dev:{areas:["برنامه","تحمل ملال مفید","گفتگوی سخت","پول و آینده"],prac:["بلوک کوتاه کار خشک با پاداش حسی","همکار ساختارمند","پس‌انداز خودکار","در تعارض یک جمله نیاز بگویید"]},
+books:[{t:"The Happiness Trap",a:"راس هریس",w:"احساس بدون فرار"},{t:"Daring Greatly",a:"برنه براون",w:"دیده شدن واقعی"}],
+advice:["لحظه حال غنی است؛ آینده مجموع همین لحظه‌هاست.","برنامه حداقلی قفس نیست.","گاهی بمانید و گفتگوی سخت را تمام کنید."],
+similar:["ISFP","ESFJ","ENFP","ESTP"]}
+};
+
+/* ========== STATE ========== */
+const STORE_KEY = "tipnama-mbti-v1";
+let state = {
+  view: "home",
+  name: "",
+  index: 0,
+  answers: {},
+  result: null
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      state = Object.assign(state, s);
+    }
+  } catch (e) {}
+}
+function saveState() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      name: state.name,
+      index: state.index,
+      answers: state.answers,
+      result: state.result,
+      view: state.view === "quiz" ? "quiz" : (state.result ? "results" : "home")
+    }));
+  } catch (e) {}
+}
+
+function faNum(n, d) {
+  return Number(n).toLocaleString("fa-IR", {
+    maximumFractionDigits: d || 0,
+    minimumFractionDigits: d || 0
+  });
+}
+function faDate(iso) {
+  return new Date(iso || Date.now()).toLocaleDateString("fa-IR", {
+    year: "numeric", month: "long", day: "numeric"
+  });
+}
+function purityLabel(p) {
+  if (p >= 85) return "بسیار خالص و مشخص";
+  if (p >= 70) return "خالص و پایدار";
+  if (p >= 55) return "گرایش روشن با کمی انعطاف";
+  if (p >= 40) return "ترکیبی؛ هر دو قطب فعال‌اند";
+  return "مرزی و سیال";
+}
+function roleFa(r) {
+  return {dominant:"تابع غالب",auxiliary:"تابع کمکی",tertiary:"تابع سوم",inferior:"تابع زیرین"}[r] || r;
+}
+function letterDiff(a, b) {
+  const labels = ["E/I","S/N","T/F","J/P"];
+  for (let i = 0; i < 4; i++) {
+    if (a[i] !== b[i]) return b[i] + " به‌جای " + a[i] + " (" + labels[i] + ")";
+  }
+  return "همسان";
+}
+
+/* ========== SCORING ========== */
+function scoreAnswers(answers, name) {
+  const raw = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  const pairs = {EI:["E","I"],SN:["S","N"],TF:["T","F"],JP:["J","P"]};
+  QUESTIONS.forEach(q => {
+    const v = answers[q.id];
+    if (v == null) return;
+    const [a,b] = pairs[q.d];
+    const toward = q.p;
+    const against = toward === a ? b : a;
+    if (v >= 0) raw[toward] += v;
+    else raw[against] += -v;
+  });
+  const scores = Object.keys(pairs).map(d => {
+    const [left, right] = pairs[d];
+    let lp = raw[left], rp = raw[right];
+    if (lp + rp === 0) { lp = 1; rp = 1; }
+    const total = lp + rp;
+    const leftPct = (lp / total) * 100;
+    const rightPct = (rp / total) * 100;
+    const dominant = leftPct >= rightPct ? left : right;
+    const purity = Math.abs(leftPct - 50) * 2;
+    return {d, left, right, leftPct, rightPct, dominant, purity};
+  });
+  const type = scores.map(s => s.dominant).join("");
+  const overall = scores.reduce((a,s) => a + s.purity, 0) / scores.length;
+  const letters = {};
+  scores.forEach(s => {
+    letters[s.left] = s.leftPct;
+    letters[s.right] = s.rightPct;
+  });
+  return {
+    type,
+    scores,
+    letters,
+    overallPurity: overall,
+    answeredAt: new Date().toISOString(),
+    name: (name || "").trim() || "بدون نام"
+  };
+}
+
+const SAMPLE = {
+  type: "INTJ",
+  name: "نمونه",
+  answeredAt: new Date().toISOString(),
+  overallPurity: 61.5,
+  letters: {E:18,I:82,S:24,N:76,T:85,F:15,J:80,P:20},
+  scores: [
+    {d:"EI",left:"E",right:"I",leftPct:18,rightPct:82,dominant:"I",purity:64},
+    {d:"SN",left:"S",right:"N",leftPct:24,rightPct:76,dominant:"N",purity:52},
+    {d:"TF",left:"T",right:"F",leftPct:85,rightPct:15,dominant:"T",purity:70},
+    {d:"JP",left:"J",right:"P",leftPct:80,rightPct:20,dominant:"J",purity:60}
+  ]
+};
+
+/* ========== VIEWS ========== */
+function show(view) {
+  state.view = view;
+  document.getElementById("view-home").classList.toggle("hidden", view !== "home");
+  document.getElementById("view-quiz").classList.toggle("hidden", view !== "quiz");
+  document.getElementById("view-results").classList.toggle("hidden", view !== "results");
+  saveState();
+  window.scrollTo(0, 0);
+}
+
+function updateHomeButtons() {
+  const answered = Object.keys(state.answers).filter(k => state.answers[k] != null).length;
+  const cont = document.getElementById("btn-continue");
+  const res = document.getElementById("btn-resume-result");
+  if (answered > 0 && answered < 60 && !state.result) {
+    cont.classList.remove("hidden");
+    cont.textContent = "ادامه آزمون (" + faNum(answered) + " از ۶۰ پاسخ داده شده)";
+  } else cont.classList.add("hidden");
+  if (state.result) {
+    res.classList.remove("hidden");
+    res.textContent = "بازگشت به گزارش قبلی (" + state.result.type + ")";
+  } else res.classList.add("hidden");
+  if (state.name) document.getElementById("user-name").value = state.name;
+}
+
+function startQuiz(e) {
+  if (e) e.preventDefault();
+  state.name = document.getElementById("user-name").value.trim();
+  state.index = 0;
+  state.answers = {};
+  state.result = null;
+  QUESTIONS.forEach(q => { state.answers[q.id] = null; });
+  show("quiz");
+  renderQuiz();
+  return false;
+}
+function continueQuiz() {
+  show("quiz");
+  renderQuiz();
+}
+function exitQuiz() {
+  show("home");
+  updateHomeButtons();
+}
+function resetAll() {
+  state = {view:"home", name: state.name, index:0, answers:{}, result:null};
+  saveState();
+  show("home");
+  updateHomeButtons();
+}
+function loadSample() {
+  state.name = document.getElementById("user-name").value.trim() || "نمونه";
+  state.result = Object.assign({}, SAMPLE, {
+    name: state.name,
+    answeredAt: new Date().toISOString()
+  });
+  showResults();
+}
+
+function renderQuiz() {
+  const q = QUESTIONS[state.index];
+  const answered = Object.keys(state.answers).filter(k => state.answers[k] != null).length;
+  document.getElementById("quiz-counter").textContent = faNum(state.index + 1) + " از " + faNum(60);
+  document.getElementById("quiz-progress").style.width = (answered / 60 * 100) + "%";
+  document.getElementById("quiz-name").textContent = state.name || "";
+  document.getElementById("quiz-qnum").textContent = "پرسش " + faNum(state.index + 1);
+  document.getElementById("quiz-text").textContent = q.t;
+  const cur = state.answers[q.id];
+  const scale = [-2,-1,0,1,2];
+  const labels = ["کاملاً مخالف","مخالف","بینابین","موافق","کاملاً موافق"];
+  document.getElementById("likert").innerHTML = scale.map((v,i) =>
+    '<button type="button" aria-label="'+labels[i]+'" class="'+(cur===v?"on":"")+'" data-v="'+v+'"><span></span></button>'
+  ).join("");
+  document.querySelectorAll("#likert button").forEach(btn => {
+    btn.onclick = () => pick(+btn.dataset.v);
+  });
+  document.getElementById("btn-prev").disabled = state.index === 0;
+  const isLast = state.index === 59;
+  document.getElementById("btn-next").classList.toggle("hidden", isLast);
+  document.getElementById("btn-finish").classList.toggle("hidden", !isLast);
+  document.getElementById("btn-next").disabled = cur == null;
+  document.getElementById("btn-finish").disabled = !QUESTIONS.every(x => state.answers[x.id] != null);
+}
+function pick(v) {
+  const q = QUESTIONS[state.index];
+  state.answers[q.id] = v;
+  saveState();
+  renderQuiz();
+  setTimeout(() => {
+    if (state.index < 59) {
+      state.index++;
+      saveState();
+      renderQuiz();
+    }
+  }, 180);
+}
+function prevQ() {
+  if (state.index > 0) {
+    state.index--;
+    saveState();
+    renderQuiz();
+  }
+}
+function nextQ() {
+  if (state.answers[QUESTIONS[state.index].id] == null) return;
+  if (state.index < 59) {
+    state.index++;
+    saveState();
+    renderQuiz();
+  }
+}
+function finishQuiz() {
+  if (!QUESTIONS.every(x => state.answers[x.id] != null)) return;
+  state.result = scoreAnswers(state.answers, state.name);
+  showResults();
+}
+
+/* ========== RESULTS RENDER ========== */
+function showResults() {
+  if (!state.result) return;
+  const r = state.result;
+  const p = PROFILES[r.type];
+  if (!p) return;
+  const overall = r.scores.reduce((a,s) => a + s.purity, 0) / r.scores.length;
+  document.getElementById("res-bar-title").textContent = "گزارش " + r.type;
+  const date = faDate(r.answeredAt);
+  const maxFreq = Math.max(...Object.values(FREQ));
+  const sortedTypes = Object.keys(FREQ).sort((a,b) => FREQ[b] - FREQ[a]);
+  const rank = sortedTypes.indexOf(r.type) + 1;
+
+  let html = "";
+  // Cover
+  html += '<header class="print-avoid" style="border-bottom:1px solid var(--line);padding-bottom:2rem">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;gap:1rem">';
+  html += '<div style="display:flex;align-items:center;gap:.5rem"><div class="mark" style="width:28px;height:28px;gap:2px"><span></span><span></span><span></span><span></span></div><span style="font-size:.85rem;color:var(--muted)">تیپ‌نما · گزارش شخصیت</span></div>';
+  html += '<span style="font-size:.75rem;color:var(--faint)">'+date+'</span></div>';
+  html += '<p style="margin-top:1.5rem;font-size:.9rem;color:var(--muted)">'+esc(r.name)+'</p>';
+  html += '<p style="font-family:var(--display);font-size:clamp(3rem,10vw,4.5rem);letter-spacing:.05em;line-height:1.1">'+r.type+'</p>';
+  html += '<p style="font-size:1.35rem;font-weight:600;color:var(--accent);margin-top:.35rem">'+p.nick+' <span style="font-size:1rem;font-weight:400;color:var(--muted)">· '+p.title+'</span></p>';
+  html += '<p style="margin-top:1rem;max-width:36ch;line-height:1.6">'+p.slogan+'</p>';
+  html += '<div style="margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:.4rem">';
+  r.scores.forEach(s => {
+    const pct = Math.round(Math.max(s.leftPct, s.rightPct));
+    html += '<span class="chip">'+s.dominant+' · '+faNum(pct)+'٪ '+LETTER_FA[s.dominant].fa+'</span>';
+  });
+  html += '<span class="chip accent">خلوص کلی '+faNum(Math.round(overall))+'٪ · '+purityLabel(overall)+'</span>';
+  html += '</div></header>';
+
+  // TOC
+  const toc = [
+    ["status","نمودار وضعیت تیپ"],["traits-chart","نمودار ویژگی‌ها"],["traits-split","ویژگی‌های مجزا"],
+    ["frequency","درصد فراوانی"],["identity","هویت تیپ"],["qualities","صفات و ویژگی‌ها"],
+    ["sw","نقاط قوت و ضعف"],["romance","روابط عاشقانه"],["social","روابط با دیگران"],
+    ["famous","افراد و کاراکترهای مشهور"],["work","محل کار"],["careers","مشاغل مناسب"],
+    ["satisfaction","رضایت شغلی"],["growth","توسعه فردی"],["books","معرفی کتاب"],
+    ["advice","راهکار و پیشنهاد"],["similar","تیپ‌های مشابه"],["purity","درصد خلوص تیپ"]
+  ];
+  html += '<nav class="no-print card" style="margin-top:1.75rem"><p style="font-size:.75rem;color:var(--muted);font-weight:500">فهرست گزارش</p><ol class="toc" style="margin-top:.75rem">';
+  toc.forEach((item,i) => {
+    html += '<li><a href="#'+item[0]+'"><span style="color:var(--faint);margin-left:.35rem">'+faNum(i+1)+'.</span> '+item[1]+'</a></li>';
+  });
+  html += '</ol></nav>';
+
+  // 01 Status
+  html += section("status","۰۱","نمودار وضعیت تیپ شخصیتی", false);
+  html += '<p style="font-size:.9rem;color:var(--muted);margin-bottom:1.25rem">چهار دوگانگی کلاسیک مایرز–بریگز. بخش پررنگ‌تر ترجیح غالب شماست.</p>';
+  r.scores.forEach(s => {
+    const m = META[s.d];
+    const domFa = s.dominant === s.left ? m.Lf : m.Rf;
+    const domPct = Math.round(Math.max(s.leftPct, s.rightPct));
+    html += '<div class="bar-row print-avoid"><div class="bar-title"><div><p style="font-size:.7rem;color:var(--muted)">'+m.title+'</p>';
+    html += '<p style="font-size:.9rem;font-weight:500">'+domFa+' <span style="font-family:var(--display);color:var(--accent);margin-right:.35rem">'+s.dominant+'</span></p></div>';
+    html += '<span style="font-size:.9rem;color:var(--muted);font-variant-numeric:tabular-nums">'+faNum(domPct)+'٪</span></div>';
+    html += '<div class="bar-track"><i class="'+(s.dominant===s.left?"dom":"sub")+'" style="width:'+s.leftPct+'%"></i><i class="'+(s.dominant===s.right?"dom":"sub")+'" style="width:'+s.rightPct+'%"></i></div>';
+    html += '<div class="bar-meta"><span>'+m.Lf+' ('+s.left+') '+faNum(Math.round(s.leftPct))+'٪</span><span>'+faNum(Math.round(s.rightPct))+'٪ '+m.Rf+' ('+s.right+')</span></div></div>';
+  });
+  html += '</section>';
+
+  // 02 Radar
+  html += section("traits-chart","۰۲","نمودار ویژگی‌های شخصیتی", true);
+  html += '<p style="font-size:.9rem;color:var(--muted);margin-bottom:.75rem">هشت قطب به‌صورت جداگانه روی نمودار راداری.</p>';
+  html += '<div class="card"><div class="radar-wrap"><canvas id="radar-canvas" width="360" height="320"></canvas></div></div></section>';
+
+  // 03 Traits split
+  html += section("traits-split","۰۳","ویژگی‌های شخصیتی به‌صورت مجزا", false);
+  html += '<p style="font-size:.9rem;color:var(--muted);margin-bottom:1rem">هر قطب مستقل محاسبه شده است. در هر جفت، مجموع دو طرف ۱۰۰٪ است.</p><div class="trait-grid">';
+  ["E","I","S","N","T","F","J","P"].forEach(L => {
+    const pct = Math.round(r.letters[L]);
+    html += '<div class="trait-card print-avoid"><div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:.9rem;font-weight:500"><span style="font-family:var(--display);color:var(--accent);margin-left:.35rem">'+L+'</span>'+LETTER_FA[L].fa+'</span><span style="font-size:.85rem;color:var(--muted)">'+faNum(pct)+'٪</span></div>';
+    html += '<p style="font-size:.75rem;color:var(--faint);margin-top:.25rem">'+LETTER_FA[L].hint+'</p><div class="mini"><i style="width:'+pct+'%"></i></div></div>';
+  });
+  html += '</div></section>';
+
+  // 04 Frequency
+  html += section("frequency","۰۴","درصد فراوانی تیپ شخصیتی", true);
+  html += '<p style="font-size:.9rem;color:var(--muted);margin-bottom:1rem">فراوانی تقریبی تیپ شما در جمعیت حدود <strong style="color:var(--ink)">'+faNum(FREQ[r.type],1)+'٪</strong> است و از نظر شیوع در رتبه <strong style="color:var(--ink)">'+faNum(rank)+'</strong> از ۱۶ قرار دارد.</p>';
+  sortedTypes.forEach(t => {
+    const v = FREQ[t];
+    const mine = t === r.type;
+    html += '<div class="freq-row'+(mine?" mine":"")+'"><span class="code">'+t+'</span><div class="freq-track"><i style="width:'+(v/maxFreq*100)+'%"></i></div><span class="freq-pct">'+v.toFixed(1)+'%</span></div>';
+  });
+  html += '</section>';
+
+  // 05 Identity
+  html += section("identity","۰۵","هویت تیپ شخصیتی", false);
+  html += '<p style="line-height:1.7">'+p.identity+'</p><div class="fn-grid" style="margin-top:1.25rem">';
+  p.fns.forEach(fn => {
+    html += '<div class="fn-card"><p class="role">'+roleFa(fn.r)+'</p><p style="font-weight:500;margin-top:.2rem"><span style="font-family:var(--display);color:var(--accent);margin-left:.35rem">'+fn.c+'</span>'+fn.n+'</p></div>';
+  });
+  html += '</div></section>';
+
+  // 06 Qualities
+  html += section("qualities","۰۶","صفات شخصیتی و ویژگی‌های آن", true);
+  p.traits.forEach(tr => {
+    html += '<div class="border-accent print-avoid"><h3 style="font-size:.95rem">'+tr.n+'</h3><p style="font-size:.9rem;color:var(--muted);margin-top:.25rem">'+tr.t+'</p></div>';
+  });
+  html += '</section>';
+
+  // 07 SW
+  html += section("sw","۰۷","نقاط قوت و ضعف شخصیتی", false);
+  html += '<div class="two-col"><div class="card"><h3 style="font-size:.9rem;color:var(--accent)">نقاط قوت</h3><ul style="list-style:none;margin-top:.75rem">';
+  p.str.forEach(s => { html += '<li style="font-size:.9rem;padding:.3rem 0;line-height:1.5">'+s+'</li>'; });
+  html += '</ul></div><div class="card"><h3 style="font-size:.9rem;color:var(--danger)">نقاط ضعف</h3><ul style="list-style:none;margin-top:.75rem">';
+  p.weak.forEach(s => { html += '<li style="font-size:.9rem;padding:.3rem 0;line-height:1.5">'+s+'</li>'; });
+  html += '</ul></div></div></section>';
+
+  // 08 Romance
+  html += section("romance","۰۸","در روابط عاشقانه", true);
+  html += '<p style="line-height:1.7">'+p.romance.s+'</p><div class="three-col" style="margin-top:1.25rem">';
+  html += listBlock("به‌عنوان شریک", p.romance.as);
+  html += listBlock("نیازها", p.romance.need);
+  html += listBlock("چالش‌ها", p.romance.ch);
+  html += '</div></section>';
+
+  // 09 Social
+  html += section("social","۰۹","در روابط با دیگران", false);
+  html += '<p style="line-height:1.7">'+p.social.s+'</p><div class="two-col" style="margin-top:1.25rem">';
+  html += listBlock("با دیگران", p.social.w);
+  html += listBlock("در تعارض", p.social.c);
+  html += '</div></section>';
+
+  // 10 Famous
+  html += section("famous","۱۰","افراد و کاراکترهای مشهور", true);
+  html += '<p style="font-size:.75rem;color:var(--faint);margin-bottom:.75rem">انتساب تیپ به افراد مشهور برآورد غیررسمی است و جنبه آموزشی دارد.</p>';
+  html += '<h3 style="font-size:.9rem;margin-bottom:.5rem">چهره‌های شناخته‌شده</h3><div class="two-col">';
+  p.famous.forEach(f => {
+    html += '<div class="card print-avoid"><p style="font-weight:500">'+f.n+'</p><p style="font-size:.75rem;color:var(--muted)">'+f.note+'</p></div>';
+  });
+  html += '</div><h3 style="font-size:.9rem;margin:1.5rem 0 .5rem">کاراکترهای داستانی</h3><div class="two-col">';
+  p.chars.forEach(f => {
+    html += '<div class="card print-avoid"><p style="font-weight:500">'+f.n+'</p><p style="font-size:.75rem;color:var(--muted)">'+f.note+'</p></div>';
+  });
+  html += '</div></section>';
+
+  // 11 Work
+  html += section("work","۱۱","ویژگی‌های فرد در محل کار", false);
+  html += '<p style="line-height:1.7">'+p.work.s+'</p>';
+  html += '<dl style="margin-top:1.25rem"><div class="print-avoid" style="margin-bottom:1rem"><dt style="font-size:.75rem;color:var(--muted)">به‌عنوان رهبر</dt><dd style="font-size:.9rem;margin-top:.25rem">'+p.work.lead+'</dd></div>';
+  html += '<div class="print-avoid" style="margin-bottom:1rem"><dt style="font-size:.75rem;color:var(--muted)">به‌عنوان همکار</dt><dd style="font-size:.9rem;margin-top:.25rem">'+p.work.col+'</dd></div>';
+  html += '<div class="print-avoid"><dt style="font-size:.75rem;color:var(--muted)">به‌عنوان کارمند</dt><dd style="font-size:.9rem;margin-top:.25rem">'+p.work.emp+'</dd></div></dl></section>';
+
+  // 12 Careers
+  html += section("careers","۱۲","مشاغل مناسب شما", true);
+  html += '<ul style="list-style:none">';
+  p.careers.forEach(c => {
+    html += '<li class="card print-avoid" style="margin-bottom:.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem"><span style="font-weight:500">'+c.t+'</span><span style="font-size:.85rem;color:var(--muted)">'+c.f+'</span></li>';
+  });
+  html += '</ul></section>';
+
+  // 13 Satisfaction
+  html += section("satisfaction","۱۳","رضایت شغلی", false);
+  html += '<p style="line-height:1.7">'+p.job.env+'</p><div class="two-col" style="margin-top:1.25rem">';
+  html += listBlock("محرک‌های رضایت", p.job.drv);
+  html += listBlock("کشنده‌های رضایت", p.job.kill);
+  html += '</div></section>';
+
+  // 14 Growth
+  html += section("growth","۱۴","توسعه فردی", true);
+  html += '<div class="two-col">';
+  html += listBlock("نواحی رشد", p.dev.areas);
+  html += listBlock("تمرین‌های پیشنهادی", p.dev.prac);
+  html += '</div></section>';
+
+  // 15 Books
+  html += section("books","۱۵","معرفی کتاب", false);
+  p.books.forEach(b => {
+    html += '<div class="border-accent print-avoid" style="border-color:var(--line)"><p style="font-weight:500">'+b.t+'</p><p style="font-size:.75rem;color:var(--muted)">'+b.a+'</p><p style="font-size:.85rem;color:var(--muted);margin-top:.25rem">'+b.w+'</p></div>';
+  });
+  html += '</section>';
+
+  // 16 Advice
+  html += section("advice","۱۶","راهکار و پیشنهاد", true);
+  html += '<ol style="list-style:none">';
+  p.advice.forEach((a,i) => {
+    html += '<li style="display:flex;gap:.75rem;font-size:.9rem;line-height:1.55;margin-bottom:.75rem"><span style="font-family:var(--display);color:var(--accent);font-variant-numeric:tabular-nums">'+faNum(i+1)+'</span><span>'+a+'</span></li>';
+  });
+  html += '</ol></section>';
+
+  // 17 Similar
+  html += section("similar","۱۷","تیپ‌های مشابه", false);
+  html += '<p style="font-size:.9rem;color:var(--muted);margin-bottom:1rem">این تیپ‌ها فقط در یک حرف با '+r.type+' فرق دارند.</p><div class="two-col">';
+  p.similar.forEach(code => {
+    const sp = PROFILES[code];
+    if (!sp) return;
+    html += '<div class="card print-avoid"><p style="font-family:var(--display);font-size:1.25rem;color:var(--accent)">'+code+'</p><p style="font-weight:500">'+sp.nick+' · '+sp.title+'</p><p style="font-size:.75rem;color:var(--muted);margin-top:.25rem">تفاوت: '+letterDiff(r.type, code)+'</p></div>';
+  });
+  html += '</div></section>';
+
+  // 18 Purity
+  html += section("purity","۱۸","بررسی درصد خلوص تیپ شما", true);
+  const c = 2 * Math.PI * 42;
+  const dash = (Math.min(100, Math.max(0, overall)) / 100) * c;
+  html += '<div class="card" style="display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1.5rem">';
+  html += '<div class="purity-ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--line)" stroke-width="8"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" stroke-dasharray="'+dash+' '+c+'"/></svg>';
+  html += '<div class="center"><strong>'+faNum(Math.round(overall))+'</strong><span>درصد خلوص</span></div></div>';
+  html += '<div style="text-align:center"><p style="font-size:1.1rem;font-weight:500">'+purityLabel(overall)+'</p><p style="font-size:.85rem;color:var(--muted);margin-top:.5rem;max-width:36ch;margin-left:auto;margin-right:auto;line-height:1.55">خلوص کلی میانگین فاصله چهار بعد از حالت پنجاه‌پنجاه است. عدد بالاتر یعنی تیپ '+r.type+' با تمایز روشن‌تری جدا می‌شود.</p></div></div>';
+  html += '<ul style="list-style:none;margin-top:1.5rem">';
+  r.scores.forEach(s => {
+    const m = META[s.d];
+    const domFa = s.dominant === s.left ? m.Lf : m.Rf;
+    const pct = Math.round(Math.max(s.leftPct, s.rightPct));
+    html += '<li class="print-avoid" style="margin-bottom:1rem"><div style="display:flex;justify-content:space-between;font-size:.9rem"><span>'+domFa+' ('+s.dominant+')</span><span style="color:var(--muted);font-variant-numeric:tabular-nums">شدت '+faNum(pct)+'٪ · خلوص '+faNum(Math.round(s.purity))+'٪</span></div>';
+    html += '<div style="height:6px;background:var(--line);border-radius:99px;margin-top:.4rem;overflow:hidden"><i style="display:block;height:100%;width:'+s.purity+'%;background:var(--accent);border-radius:99px"></i></div>';
+    html += '<p style="font-size:.75rem;color:var(--faint);margin-top:.25rem">'+purityLabel(s.purity)+'</p></li>';
+  });
+  html += '</ul>';
+  const border = r.scores.filter(s => s.purity < 30);
+  if (border.length) {
+    html += '<p class="alert">در '+border.map(s => META[s.d].title).join("، ")+' فاصله شما از قطب مخالف کم است. این حروف «مرزی»اند؛ رفتار شما در این بعد بسته به موقعیت می‌تواند به هر دو سمت متمایل شود.</p>';
+  } else {
+    html += '<p class="alert">هر چهار بعد تمایز قابل قبولی دارند. تیپ '+r.type+' برای شما توصیف پایداری است، هرچند انسان‌ها در موقعیت‌های مختلف انعطاف نشان می‌دهند.</p>';
+  }
+  html += '</section>';
+
+  html += '<footer style="margin-top:3rem;border-top:1px solid var(--line);padding-top:1.25rem;font-size:.75rem;color:var(--faint);line-height:1.55">گزارش تولیدشده توسط تیپ‌نما برای '+esc(r.name)+' در '+date+'. مدل MBTI ترجیح شناختی را توصیف می‌کند، نه ارزش انسانی یا تشخیص روان‌پزشکی. برای تصمیم‌های بالینی یا شغلی حساس با متخصص مشورت کنید.</footer>';
+
+  document.getElementById("report-body").innerHTML = html;
+  show("results");
+  setTimeout(() => drawRadar(r.letters), 50);
+}
+
+function section(id, kicker, title, pageBreak) {
+  return '<section id="'+id+'" class="section'+(pageBreak?" print-break":"")+'"><p class="kicker">'+kicker+'</p><h2>'+title+'</h2>';
+}
+function listBlock(title, items) {
+  let h = '<div class="list-block"><h3>'+title+'</h3><ul>';
+  items.forEach(i => { h += '<li>'+i+'</li>'; });
+  return h + '</ul></div>';
+}
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function drawRadar(letters) {
+  const canvas = document.getElementById("radar-canvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2 + 8;
+  const R = Math.min(W, H) * 0.36;
+  const keys = ["E","I","S","N","T","F","J","P"];
+  const n = keys.length;
+  ctx.clearRect(0, 0, W, H);
+  // grid
+  for (let ring = 1; ring <= 4; ring++) {
+    const r = R * (ring / 4);
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) {
+      const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+      const x = cx + r * Math.cos(a);
+      const y = cy + r * Math.sin(a);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = "#e4ddd2";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+  // axes
+  for (let i = 0; i < n; i++) {
+    const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + R * Math.cos(a), cy + R * Math.sin(a));
+    ctx.strokeStyle = "#e4ddd2";
+    ctx.stroke();
+  }
+  // data
+  ctx.beginPath();
+  keys.forEach((k, i) => {
+    const v = (letters[k] || 0) / 100;
+    const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+    const x = cx + R * v * Math.cos(a);
+    const y = cy + R * v * Math.sin(a);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = "rgba(31,92,87,0.22)";
+  ctx.fill();
+  ctx.strokeStyle = "#1f5c57";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  // labels
+  ctx.fillStyle = "#6a635c";
+  ctx.font = "600 13px Fraunces, serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  keys.forEach((k, i) => {
+    const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+    const x = cx + (R + 22) * Math.cos(a);
+    const y = cy + (R + 22) * Math.sin(a);
+    ctx.fillText(k, x, y);
+  });
+}
+
+/* ========== INIT ========== */
+loadState();
+if (state.view === "results" && state.result) {
+  showResults();
+} else if (state.view === "quiz") {
+  show("quiz");
+  renderQuiz();
+} else {
+  show("home");
+  updateHomeButtons();
+}
+</script>
+</body>
+</html>
